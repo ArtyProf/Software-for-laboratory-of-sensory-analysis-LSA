@@ -1,6 +1,6 @@
 using System;
 
-namespace LSA.Models
+namespace LSA.Entities
 {
     public class ErrorViewModel
     {

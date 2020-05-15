@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using LSA.Models;
+using LSA.Entities;
 
 namespace LSA.Controllers
 {
