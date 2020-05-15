@@ -95,7 +95,6 @@ namespace LSA
                 roleResult = await RoleManager.CreateAsync(new IdentityRole("Laboratory"));
             }
             //here we are assigning the Admin role to the User that we have registered above 
-            //Now, we are assinging admin role to this user("Ali@gmail.com"). When will we run this project then it will
             //be assigned to that user.
             IdentityUser user = await UserManager.FindByEmailAsync("laboratory@laboratory.com");
             var User = new IdentityUser();
@@ -109,7 +108,6 @@ namespace LSA
                 roleResult2 = await RoleManager.CreateAsync(new IdentityRole("CEO"));
             }
             //here we are assigning the Admin role to the User that we have registered above 
-            //Now, we are assinging admin role to this user("Ali@gmail.com"). When will we run this project then it will
             //be assigned to that user.
             IdentityUser user2 = await UserManager.FindByEmailAsync("ceo@ceo.com");
             var User2 = new IdentityUser();
