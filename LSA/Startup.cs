@@ -49,7 +49,7 @@ namespace LSA
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
         {
             if (env.IsDevelopment())
             {
@@ -78,6 +78,47 @@ namespace LSA
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+            CreateSpecificRoles(services).Wait(); 
+        }
+
+        private async Task CreateSpecificRoles(IServiceProvider serviceProvider)
+        {
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+            IdentityResult roleResult;
+            //here in this line we are adding Admin Role
+            var roleCheck = await RoleManager.RoleExistsAsync("Laboratory");
+            if (!roleCheck)
+            {
+                //here in this line we are creating admin role and seed it to the database
+                roleResult = await RoleManager.CreateAsync(new IdentityRole("Laboratory"));
+            }
+            //here we are assigning the Admin role to the User that we have registered above 
+            //Now, we are assinging admin role to this user("Ali@gmail.com"). When will we run this project then it will
+            //be assigned to that user.
+            IdentityUser user = await UserManager.FindByEmailAsync("laboratory@laboratory.com");
+            var User = new IdentityUser();
+            await UserManager.AddToRoleAsync(user, "Laboratory");
+
+            IdentityResult roleResult2;
+            var roleCheck2 = await RoleManager.RoleExistsAsync("CEO");
+            if (!roleCheck2)
+            {
+                //here in this line we are creating admin role and seed it to the database
+                roleResult2 = await RoleManager.CreateAsync(new IdentityRole("CEO"));
+            }
+            //here we are assigning the Admin role to the User that we have registered above 
+            //Now, we are assinging admin role to this user("Ali@gmail.com"). When will we run this project then it will
+            //be assigned to that user.
+            IdentityUser user2 = await UserManager.FindByEmailAsync("ceo@ceo.com");
+            var User2 = new IdentityUser();
+            await UserManager.AddToRoleAsync(user2, "CEO");
+
+            if (await UserManager.IsInRoleAsync(user, "Laboratory") && await UserManager.IsInRoleAsync(user2, "CEO"))
+            {
+                return;
+            }
         }
     }
 }
