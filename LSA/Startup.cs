@@ -78,7 +78,8 @@ namespace LSA
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
-            CreateSpecificRoles(services).Wait(); 
+            //Use only once, when you need special roles!
+            //CreateSpecificRoles(services).Wait(); 
         }
 
         private async Task CreateSpecificRoles(IServiceProvider serviceProvider)
@@ -112,11 +113,6 @@ namespace LSA
             IdentityUser user2 = await UserManager.FindByEmailAsync("ceo@ceo.com");
             var User2 = new IdentityUser();
             await UserManager.AddToRoleAsync(user2, "CEO");
-
-            if (await UserManager.IsInRoleAsync(user, "Laboratory") && await UserManager.IsInRoleAsync(user2, "CEO"))
-            {
-                return;
-            }
         }
     }
 }
