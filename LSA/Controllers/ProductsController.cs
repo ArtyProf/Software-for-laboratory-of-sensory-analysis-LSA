@@ -10,22 +10,22 @@ using LSA.Entity;
 
 namespace LSA.Controllers
 {
-    public class TastingsController : Controller
+    public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public TastingsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Tastings
+        // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tastings.ToListAsync());
+            return View(await _context.Products.ToListAsync());
         }
 
-        // GET: Tastings/Details/5
+        // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace LSA.Controllers
                 return NotFound();
             }
 
-            var tasting = await _context.Tastings
-                .FirstOrDefaultAsync(m => m.TastingId == id);
-            if (tasting == null)
+            var product = await _context.Products
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(tasting);
+            return View(product);
         }
 
-        // GET: Tastings/Create
+        // GET: Products/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tastings/Create
+        // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TastingId,TastingName,IsFinished")] Tasting tasting)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName")] Product product)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tasting);
+                _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(tasting);
+            return View(product);
         }
 
-        // GET: Tastings/Edit/5
+        // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace LSA.Controllers
                 return NotFound();
             }
 
-            var tasting = await _context.Tastings.FindAsync(id);
-            if (tasting == null)
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(tasting);
+            return View(product);
         }
 
-        // POST: Tastings/Edit/5
+        // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TastingId,TastingName,IsFinished")] Tasting tasting)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName")] Product product)
         {
-            if (id != tasting.TastingId)
+            if (id != product.ProductId)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace LSA.Controllers
             {
                 try
                 {
-                    _context.Update(tasting);
+                    _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TastingExists(tasting.TastingId))
+                    if (!ProductExists(product.ProductId))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace LSA.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(tasting);
+            return View(product);
         }
 
-        // GET: Tastings/Delete/5
+        // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace LSA.Controllers
                 return NotFound();
             }
 
-            var tasting = await _context.Tastings
-                .FirstOrDefaultAsync(m => m.TastingId == id);
-            if (tasting == null)
+            var product = await _context.Products
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(tasting);
+            return View(product);
         }
 
-        // POST: Tastings/Delete/5
+        // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tasting = await _context.Tastings.FindAsync(id);
-            _context.Tastings.Remove(tasting);
+            var product = await _context.Products.FindAsync(id);
+            _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TastingExists(int id)
+        private bool ProductExists(int id)
         {
-            return _context.Tastings.Any(e => e.TastingId == id);
+            return _context.Products.Any(e => e.ProductId == id);
         }
     }
 }

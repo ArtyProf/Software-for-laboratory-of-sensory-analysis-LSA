@@ -16,6 +16,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.TastingName)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsFinished)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -24,6 +27,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.TastingName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsFinished)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.TastingId">Edit</a> |

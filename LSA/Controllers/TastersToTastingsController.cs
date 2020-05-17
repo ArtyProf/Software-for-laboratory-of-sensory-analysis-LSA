@@ -10,23 +10,23 @@ using LSA.Entity;
 
 namespace LSA.Controllers
 {
-    public class TasterToTastingsController : Controller
+    public class TastersToTastingsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public TasterToTastingsController(ApplicationDbContext context)
+        public TastersToTastingsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: TasterToTastings
+        // GET: TastersToTastings
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.TasterToTastings.Include(t => t.Taster).Include(t => t.Tasting);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: TasterToTastings/Details/5
+        // GET: TastersToTastings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,7 +46,7 @@ namespace LSA.Controllers
             return View(tasterToTasting);
         }
 
-        // GET: TasterToTastings/Create
+        // GET: TastersToTastings/Create
         public IActionResult Create()
         {
             ViewData["TasterId"] = new SelectList(_context.Tasters, "TasterId", "TasterName");
@@ -54,7 +54,7 @@ namespace LSA.Controllers
             return View();
         }
 
-        // POST: TasterToTastings/Create
+        // POST: TastersToTastings/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -72,7 +72,7 @@ namespace LSA.Controllers
             return View(tasterToTasting);
         }
 
-        // GET: TasterToTastings/Edit/5
+        // GET: TastersToTastings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,7 +90,7 @@ namespace LSA.Controllers
             return View(tasterToTasting);
         }
 
-        // POST: TasterToTastings/Edit/5
+        // POST: TastersToTastings/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -127,7 +127,7 @@ namespace LSA.Controllers
             return View(tasterToTasting);
         }
 
-        // GET: TasterToTastings/Delete/5
+        // GET: TastersToTastings/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,7 +147,7 @@ namespace LSA.Controllers
             return View(tasterToTasting);
         }
 
-        // POST: TasterToTastings/Delete/5
+        // POST: TastersToTastings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

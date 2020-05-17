@@ -54,7 +54,7 @@ namespace LSA.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TasterId,TasterName,TasterSecondName")] Taster taster)
+        public async Task<IActionResult> Create([Bind("TasterId,TasterName,TasterEmail,TasterSecondName")] Taster taster)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace LSA.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TasterId,TasterName,TasterSecondName")] Taster taster)
+        public async Task<IActionResult> Edit(int id, [Bind("TasterId,TasterName,TasterEmail,TasterSecondName")] Taster taster)
         {
             if (id != taster.TasterId)
             {

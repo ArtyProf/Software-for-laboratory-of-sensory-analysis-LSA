@@ -1,0 +1,120 @@
+﻿@model IEnumerable<LSA.Entity.TastingHistory>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TastingHistoryPreviousId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewProse)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewColour)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BouquetClean)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BouquetIntensity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BouquetQuality)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TasteColour)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TasteIntensity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TasteAftertaste)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TastePotencial)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TasteQuality)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Garmony)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Penalty)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hash)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TastingHistoryPreviousId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ViewProse)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ViewColour)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BouquetClean)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BouquetIntensity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BouquetQuality)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TasteColour)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TasteIntensity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TasteAftertaste)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TastePotencial)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TasteQuality)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Garmony)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Penalty)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hash)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.TastingHistoryId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.TastingHistoryId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.TastingHistoryId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
