@@ -7,8 +7,9 @@ namespace LSA.Helpers
 {
     public static class BlockHelper
     {
-        public static string ConcatData(int tastingId, int viewProse, int viewColour, int bouquetClean, int bouquetIntensity, int bouquetQuality, int tasteColour, int tasteQuality, int garmony, int penalty, DateTimeOffset transactionDate, string previousBlockHash)
+        public static string ConcatData(int tastingId, int viewProse, int viewColour, int bouquetClean, int bouquetIntensity, int bouquetQuality, int tasteColour, int tasteQuality, int tasteIntensity, int tasteAftertaste, int tastePotencial, int garmony, int penalty, DateTimeOffset transactionDate, string previousBlockHash)
         {
+            var formatedTastingId = tastingId.ToString("F");
             var formatedViewProse = viewProse.ToString("F");
             var formatedViewColour = viewColour.ToString("F");
             var formatedBouquetClean = bouquetClean.ToString("F");
@@ -16,11 +17,14 @@ namespace LSA.Helpers
             var formatedTasteColour = tasteColour.ToString("F");
             var formatedBouquetQuality = bouquetQuality.ToString("F");
             var formatedTasteQuality = tasteQuality.ToString("F");
+            var formatedTasteIntensity = tasteIntensity.ToString("F");
+            var formatedTasteAftertaste = tasteAftertaste.ToString("F");
+            var formatedTastePotencial = tastePotencial.ToString("F");
             var formatedGarmony = garmony.ToString("F");
             var formatedPenalty = penalty.ToString("F");
             var formattedDate = transactionDate.ToString("yyyy-MM-dd");
 
-            return $"{tastingId}{viewProse}{formatedViewProse}{formatedViewColour}{formatedBouquetClean}{formatedBouquetIntensity}{formatedBouquetQuality}{formatedTasteColour}{formatedTasteQuality}{formatedGarmony}{formatedPenalty}{formattedDate}{previousBlockHash}";
+            return $"{formatedTastingId}{viewProse}{formatedViewProse}{formatedViewColour}{formatedBouquetClean}{formatedBouquetIntensity}{formatedBouquetQuality}{formatedTasteColour}{formatedTasteQuality}{formatedTasteAftertaste}{formatedTasteIntensity}{formatedTastePotencial}{formatedGarmony}{formatedPenalty}{formattedDate}{previousBlockHash}";
         }
     }
 }
