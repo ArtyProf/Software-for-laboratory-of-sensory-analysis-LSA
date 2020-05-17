@@ -11,7 +11,10 @@ namespace LSA.Entity
         public int TasterId { get; set; }
         [Required]
         public string TasterName { get; set; }
+        public string TasterEmail { get; set; }
         public string TasterSecondName { get; set; }
         public virtual ICollection<TasterToTasting> TasterToTastings { get; set; }
+        public virtual ICollection<TastingResult> TastingResults { get; set; }
+        public virtual ICollection<TastingHistory> TastingHistory { get; set; }
     }
 }

@@ -17,6 +17,8 @@ namespace LSA.Data
         public DbSet<Taster> Tasters{ get; set; }
         public DbSet<Tasting> Tastings { get; set; }
         public DbSet<TasterToTasting> TasterToTastings { get; set; }
+        public DbSet<TastingResult> TastingResults { get; set; }
+        public DbSet<TastingHistory> TastingHistory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +34,22 @@ namespace LSA.Data
                 .HasOne(bc => bc.Tasting)
                 .WithMany(c => c.TasterToTastings)
                 .HasForeignKey(bc => bc.TastingId);
+            modelBuilder.Entity<Tasting>()
+                .HasMany(c => c.TastingResults)
+                .WithOne(e => e.Tasting)
+                .IsRequired();
+            modelBuilder.Entity<Taster>()
+                .HasMany(c => c.TastingResults)
+                .WithOne(e => e.Taster)
+                .IsRequired();
+            modelBuilder.Entity<Tasting>()
+                .HasMany(c => c.TastingHistory)
+                .WithOne(e => e.Tasting)
+                .IsRequired();
+            modelBuilder.Entity<Taster>()
+                .HasMany(c => c.TastingHistory)
+                .WithOne(e => e.Taster)
+                .IsRequired();
         }
     }
 }
