@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
 namespace LSA.Entity
 {
-    public class Tasting
+    public class Product
     {
         [Key]
-        public int TastingId { get; set; }
-        public string TastingName { get; set; }
-        public bool IsFinished { get; set; } = false;
-        public virtual ICollection<TasterToTasting> TasterToTastings { get; set; }
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
         public ICollection<TastingHistory> TastingHistory { get; set; }
     }
 }

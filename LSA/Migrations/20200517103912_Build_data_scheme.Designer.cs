@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LSA.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200516074207_Add tasters and tastings")]
-    partial class Addtastersandtastings
+    [Migration("20200517103912_Build_data_scheme")]
+    partial class Build_data_scheme
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,12 +21,30 @@ namespace LSA.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("LSA.Entity.Product", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProductId");
+
+                    b.ToTable("Products");
+                });
+
             modelBuilder.Entity("LSA.Entity.Taster", b =>
                 {
                     b.Property<int>("TasterId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("TasterEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TasterName")
                         .IsRequired()
@@ -62,12 +80,81 @@ namespace LSA.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit");
+
                     b.Property<string>("TastingName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TastingId");
 
                     b.ToTable("Tastings");
+                });
+
+            modelBuilder.Entity("LSA.Entity.TastingHistory", b =>
+                {
+                    b.Property<int>("TastingHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BouquetClean")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BouquetIntensity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BouquetQuality")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Garmony")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Penalty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TasteAftertaste")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TasteColour")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TasteIntensity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TastePotencial")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TasteQuality")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TasterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TastingId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("TastingIsFinished")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ViewColour")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ViewProse")
+                        .HasColumnType("int");
+
+                    b.HasKey("TastingHistoryId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("TasterId");
+
+                    b.HasIndex("TastingId");
+
+                    b.ToTable("TastingHistory");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -280,6 +367,27 @@ namespace LSA.Migrations
 
                     b.HasOne("LSA.Entity.Tasting", "Tasting")
                         .WithMany("TasterToTastings")
+                        .HasForeignKey("TastingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LSA.Entity.TastingHistory", b =>
+                {
+                    b.HasOne("LSA.Entity.Product", "Product")
+                        .WithMany("TastingHistory")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LSA.Entity.Taster", "Taster")
+                        .WithMany("TastingHistory")
+                        .HasForeignKey("TasterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LSA.Entity.Tasting", "Tasting")
+                        .WithMany("TastingHistory")
                         .HasForeignKey("TastingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
