@@ -15,7 +15,6 @@ namespace LSA.Helpers
             {
                 var previousBlock = tastingHistory.SingleOrDefault(c => c.TastingHistoryId == entry.TastingHistoryPreviousId);
                 var blockText = BlockHelper.ConcatData(
-                    entry.Tasting.TastingId,
                     entry.ViewProse,
                     entry.ViewColour,
                     entry.BouquetClean,

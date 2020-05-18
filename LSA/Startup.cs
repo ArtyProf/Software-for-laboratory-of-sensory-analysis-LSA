@@ -15,7 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using LSA.Interfaces;
-using LSA.Helpers;
+using LSA.Services;
 
 namespace LSA
 {
@@ -40,7 +40,7 @@ namespace LSA
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            services.AddTransient<ITastingHistory, TastingHistoryHelper>();
+            services.AddTransient<ITastingHistory, TastingHistoryService>();
 
             services.Configure<IdentityOptions>(options =>
             {

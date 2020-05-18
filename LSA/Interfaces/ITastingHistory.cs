@@ -8,7 +8,6 @@ namespace LSA.Interfaces
 {
     public interface ITastingHistory
     {
-        Task<IList<TastingHistory>> GetTastingHistories();
         Task CreateTastingHistory(TastingHistory tastingHistory);
     }
 }

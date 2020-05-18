@@ -14,8 +14,17 @@ namespace LSA.Entity
         [Key]
         public int TastingHistoryId { get; set; }
         public int? TastingHistoryPreviousId { get; set; }
+        [Display(Name = "Tasting")]
+        public int? TastingId { get; set; }
+        [ForeignKey("TastingId")]
         public Tasting Tasting { get; set; }
+        [Display(Name = "Taster")]
+        public int? TasterId { get; set; }
+        [ForeignKey("TasterId")]
         public Taster Taster { get; set; }
+        [Display(Name = "Product")]
+        public int? ProductId { get; set; }
+        [ForeignKey("ProductId")]
         public Product Product { get; set; }
         public int ViewProse { get; set; }
         public int ViewColour { get; set; }
@@ -38,6 +47,5 @@ namespace LSA.Entity
         public string Hash { get; set; }
         [NotMapped]
         public bool IsValid { get; set; }
-        public virtual TastingHistory Previous { get; set; }
     }
 }

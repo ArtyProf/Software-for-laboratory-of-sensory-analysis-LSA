@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LSA.Data;
 using LSA.Entity;
+using LSA.Services;
+using LSA.Interfaces;
 
 namespace LSA.Controllers
 {
     public class TastingHistoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ITastingHistory _tastingHistoryService;
 
-        public TastingHistoriesController(ApplicationDbContext context)
+        public TastingHistoriesController(ApplicationDbContext context,
+                                            ITastingHistory tastingHistoryService)
         {
             _context = context;
+            _tastingHistoryService = tastingHistoryService;
         }
 
         // GET: TastingHistories
@@ -54,12 +59,11 @@ namespace LSA.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TastingHistoryId,TastingHistoryPreviousId,ViewProse,ViewColour,BouquetClean,BouquetIntensity,BouquetQuality,TasteColour,TasteIntensity,TasteAftertaste,TastePotencial,TasteQuality,Garmony,Penalty,TransactionDate,Hash")] TastingHistory tastingHistory)
+        public async Task<IActionResult> Create(TastingHistory tastingHistory)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tastingHistory);
-                await _context.SaveChangesAsync();
+                await _tastingHistoryService.CreateTastingHistory(tastingHistory);
                 return RedirectToAction(nameof(Index));
             }
             return View(tastingHistory);

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LSA.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200517142051_Add_blockchain_support")]
-    partial class Add_blockchain_support
+    [Migration("20200518072618_Build data scheme")]
+    partial class Builddatascheme
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -117,10 +117,8 @@ namespace LSA.Migrations
                     b.Property<int>("Penalty")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PreviousTastingHistoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("TasteAftertaste")
@@ -138,13 +136,15 @@ namespace LSA.Migrations
                     b.Property<int>("TasteQuality")
                         .HasColumnType("int");
 
-                    b.Property<int>("TasterId")
+                    b.Property<int?>("TasterId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("TastingHistoryPreviousId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TastingId")
+                    b.Property<int?>("TastingId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("TransactionDate")
@@ -157,8 +157,6 @@ namespace LSA.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("TastingHistoryId");
-
-                    b.HasIndex("PreviousTastingHistoryId");
 
                     b.HasIndex("ProductId");
 
@@ -386,10 +384,6 @@ namespace LSA.Migrations
 
             modelBuilder.Entity("LSA.Entity.TastingHistory", b =>
                 {
-                    b.HasOne("LSA.Entity.TastingHistory", "Previous")
-                        .WithMany()
-                        .HasForeignKey("PreviousTastingHistoryId");
-
                     b.HasOne("LSA.Entity.Product", "Product")
                         .WithMany("TastingHistory")
                         .HasForeignKey("ProductId")

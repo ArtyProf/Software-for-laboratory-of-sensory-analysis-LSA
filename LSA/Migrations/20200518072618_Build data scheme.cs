@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LSA.Migrations
 {
-    public partial class Build_data_scheme : Migration
+    public partial class Builddatascheme : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -224,10 +224,10 @@ namespace LSA.Migrations
                 {
                     TastingHistoryId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TastingHistoryPreviousId = table.Column<int>(nullable: true),
                     TastingId = table.Column<int>(nullable: false),
                     TasterId = table.Column<int>(nullable: false),
                     ProductId = table.Column<int>(nullable: false),
-                    TastingIsFinished = table.Column<bool>(nullable: false),
                     ViewProse = table.Column<int>(nullable: false),
                     ViewColour = table.Column<int>(nullable: false),
                     BouquetClean = table.Column<int>(nullable: false),
@@ -239,7 +239,9 @@ namespace LSA.Migrations
                     TastePotencial = table.Column<int>(nullable: false),
                     TasteQuality = table.Column<int>(nullable: false),
                     Garmony = table.Column<int>(nullable: false),
-                    Penalty = table.Column<int>(nullable: false)
+                    Penalty = table.Column<int>(nullable: false),
+                    TransactionDate = table.Column<DateTimeOffset>(nullable: false),
+                    Hash = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {

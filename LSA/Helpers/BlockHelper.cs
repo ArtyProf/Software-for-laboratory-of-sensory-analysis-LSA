@@ -7,9 +7,8 @@ namespace LSA.Helpers
 {
     public static class BlockHelper
     {
-        public static string ConcatData(int tastingId, int viewProse, int viewColour, int bouquetClean, int bouquetIntensity, int bouquetQuality, int tasteColour, int tasteQuality, int tasteIntensity, int tasteAftertaste, int tastePotencial, int garmony, int penalty, DateTimeOffset transactionDate, string previousBlockHash)
+        public static string ConcatData(int viewProse, int viewColour, int bouquetClean, int bouquetIntensity, int bouquetQuality, int tasteColour, int tasteQuality, int tasteIntensity, int tasteAftertaste, int tastePotencial, int garmony, int penalty, DateTimeOffset transactionDate, string previousBlockHash)
         {
-            var formatedTastingId = tastingId.ToString("F");
             var formatedViewProse = viewProse.ToString("F");
             var formatedViewColour = viewColour.ToString("F");
             var formatedBouquetClean = bouquetClean.ToString("F");
@@ -24,7 +23,7 @@ namespace LSA.Helpers
             var formatedPenalty = penalty.ToString("F");
             var formattedDate = transactionDate.ToString("yyyy-MM-dd");
 
-            return $"{formatedTastingId}{viewProse}{formatedViewProse}{formatedViewColour}{formatedBouquetClean}{formatedBouquetIntensity}{formatedBouquetQuality}{formatedTasteColour}{formatedTasteQuality}{formatedTasteAftertaste}{formatedTasteIntensity}{formatedTastePotencial}{formatedGarmony}{formatedPenalty}{formattedDate}{previousBlockHash}";
+            return $"{viewProse}{formatedViewProse}{formatedViewColour}{formatedBouquetClean}{formatedBouquetIntensity}{formatedBouquetQuality}{formatedTasteColour}{formatedTasteQuality}{formatedTasteAftertaste}{formatedTasteIntensity}{formatedTastePotencial}{formatedGarmony}{formatedPenalty}{formattedDate}{previousBlockHash}";
         }
     }
 }
