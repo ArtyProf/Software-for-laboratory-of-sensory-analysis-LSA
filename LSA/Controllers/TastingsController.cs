@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LSA.Data;
-using LSA.Entity;
+using LSA.Entities;
 
 namespace LSA.Controllers
 {

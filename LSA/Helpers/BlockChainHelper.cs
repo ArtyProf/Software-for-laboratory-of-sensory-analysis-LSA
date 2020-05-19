@@ -1,4 +1,4 @@
-﻿using LSA.Entity;
+﻿using LSA.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

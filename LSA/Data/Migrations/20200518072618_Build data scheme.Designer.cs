@@ -4,14 +4,16 @@ using LSA.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LSA.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200518072618_Build data scheme")]
+    partial class Builddatascheme
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,7 +21,7 @@ namespace LSA.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("LSA.Entity.Product", b =>
+            modelBuilder.Entity("LSA.Entities.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -34,7 +36,7 @@ namespace LSA.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("LSA.Entity.Taster", b =>
+            modelBuilder.Entity("LSA.Entities.Taster", b =>
                 {
                     b.Property<int>("TasterId")
                         .ValueGeneratedOnAdd()
@@ -56,7 +58,7 @@ namespace LSA.Migrations
                     b.ToTable("Tasters");
                 });
 
-            modelBuilder.Entity("LSA.Entity.TasterToTasting", b =>
+            modelBuilder.Entity("LSA.Entities.TasterToTasting", b =>
                 {
                     b.Property<int>("TasterId")
                         .HasColumnType("int");
@@ -71,7 +73,7 @@ namespace LSA.Migrations
                     b.ToTable("TasterToTastings");
                 });
 
-            modelBuilder.Entity("LSA.Entity.Tasting", b =>
+            modelBuilder.Entity("LSA.Entities.Tasting", b =>
                 {
                     b.Property<int>("TastingId")
                         .ValueGeneratedOnAdd()
@@ -89,7 +91,7 @@ namespace LSA.Migrations
                     b.ToTable("Tastings");
                 });
 
-            modelBuilder.Entity("LSA.Entity.TastingHistory", b =>
+            modelBuilder.Entity("LSA.Entities.TastingHistory", b =>
                 {
                     b.Property<int>("TastingHistoryId")
                         .ValueGeneratedOnAdd()
@@ -365,36 +367,36 @@ namespace LSA.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("LSA.Entity.TasterToTasting", b =>
+            modelBuilder.Entity("LSA.Entities.TasterToTasting", b =>
                 {
-                    b.HasOne("LSA.Entity.Taster", "Taster")
+                    b.HasOne("LSA.Entities.Taster", "Taster")
                         .WithMany("TasterToTastings")
                         .HasForeignKey("TasterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LSA.Entity.Tasting", "Tasting")
+                    b.HasOne("LSA.Entities.Tasting", "Tasting")
                         .WithMany("TasterToTastings")
                         .HasForeignKey("TastingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("LSA.Entity.TastingHistory", b =>
+            modelBuilder.Entity("LSA.Entities.TastingHistory", b =>
                 {
-                    b.HasOne("LSA.Entity.Product", "Product")
+                    b.HasOne("LSA.Entities.Product", "Product")
                         .WithMany("TastingHistory")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LSA.Entity.Taster", "Taster")
+                    b.HasOne("LSA.Entities.Taster", "Taster")
                         .WithMany("TastingHistory")
                         .HasForeignKey("TasterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LSA.Entity.Tasting", "Tasting")
+                    b.HasOne("LSA.Entities.Tasting", "Tasting")
                         .WithMany("TastingHistory")
                         .HasForeignKey("TastingId")
                         .OnDelete(DeleteBehavior.Cascade)

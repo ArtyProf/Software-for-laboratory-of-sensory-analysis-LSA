@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LSA.Entity
+namespace LSA.Entities
 {
     public class Tasting : IBlockChain
     {
@@ -14,6 +14,7 @@ namespace LSA.Entity
         public string TastingName { get; set; }
         public bool IsFinished { get; set; } = false;
         public virtual ICollection<TasterToTasting> TasterToTastings { get; set; }
+        public virtual ICollection<ProductToTasting> ProductToTastings { get; set; }
         public IList<TastingHistory> TastingHistory { get; set; }
     }
 }

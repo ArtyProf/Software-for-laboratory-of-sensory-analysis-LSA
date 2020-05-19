@@ -1,5 +1,5 @@
 ﻿using LSA.Data;
-using LSA.Entity;
+using LSA.Entities;
 using LSA.Helpers;
 using LSA.Interfaces;
 using Microsoft.AspNetCore.Mvc;

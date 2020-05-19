@@ -1,4 +1,4 @@
-﻿@model LSA.Entities.Tasting
+﻿@model LSA.Entities.ProductToTasting
 
 @{
     ViewData["Title"] = "Details";
@@ -8,24 +8,24 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Tasting</h4>
+    <h4>ProductToTasting</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TastingName)
+            @Html.DisplayNameFor(model => model.Product)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TastingName)
+            @Html.DisplayFor(model => model.Product.ProductId)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsFinished)
+            @Html.DisplayNameFor(model => model.Tasting)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsFinished)
+            @Html.DisplayFor(model => model.Tasting.TastingId)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.TastingId">Edit</a> |
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
     <a asp-action="Index">Back to List</a>
 </div>

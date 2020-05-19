@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using LSA.Entity;
+using LSA.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +18,7 @@ namespace LSA.Data
         public DbSet<Tasting> Tastings { get; set; }
         public DbSet<TasterToTasting> TasterToTastings { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductToTasting> ProductToTastings { get; set; }
         public DbSet<TastingHistory> TastingHistory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,6 +34,17 @@ namespace LSA.Data
             modelBuilder.Entity<TasterToTasting>()
                 .HasOne(bc => bc.Tasting)
                 .WithMany(c => c.TasterToTastings)
+                .HasForeignKey(bc => bc.TastingId);
+
+            modelBuilder.Entity<ProductToTasting>()
+                .HasKey(bc => new { bc.ProductId, bc.TastingId });
+            modelBuilder.Entity<ProductToTasting>()
+                .HasOne(bc => bc.Product)
+                .WithMany(b => b.ProductToTastings)
+                .HasForeignKey(bc => bc.ProductId);
+            modelBuilder.Entity<ProductToTasting>()
+                .HasOne(bc => bc.Tasting)
+                .WithMany(c => c.ProductToTastings)
                 .HasForeignKey(bc => bc.TastingId);
 
             modelBuilder.Entity<Tasting>()

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace LSA.Entities
 {
-    public class TasterToTasting
+    public class ProductToTasting
     {
-        public int TasterId { get; set; }
-        public Taster Taster { get; set; }
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
         public int TastingId { get; set; }
         public Tasting Tasting { get; set; }
     }
