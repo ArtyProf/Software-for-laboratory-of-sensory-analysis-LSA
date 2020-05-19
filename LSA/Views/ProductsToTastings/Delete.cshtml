@@ -27,8 +27,8 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="ProductId" />
-        <input type="hidden" asp-for="TastingId" />
+        <input type="hidden" name="id" value="@Html.DisplayFor(model => model.Product.ProductId)" />
+        <input type="hidden" name="id2" value="@Html.DisplayFor(model => model.Tasting.TastingId)" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

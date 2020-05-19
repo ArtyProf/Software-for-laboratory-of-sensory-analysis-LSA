@@ -18,6 +18,9 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Taster.TasterName)
         </dd class>
+        <dd class = "col-sm-10" style="display:none">
+            @Html.DisplayFor(model => model.Taster.TasterId)
+        </dd class>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Tasting)
         </dt>
@@ -27,8 +30,8 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="TasterId" />
-        <input type="hidden" asp-for="TastingId" />
+        <input type="hidden" name="id" value="@Html.DisplayFor(model => model.Taster.TasterId)" />
+        <input type="hidden" name="id2" value="@Html.DisplayFor(model => model.Tasting.TastingId)" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

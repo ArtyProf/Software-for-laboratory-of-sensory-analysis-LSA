@@ -27,7 +27,7 @@ namespace LSA.Controllers
         }
 
         // GET: ProductsToTastings/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? id2)
         {
             if (id == null)
             {
@@ -37,7 +37,7 @@ namespace LSA.Controllers
             var productToTasting = await _context.ProductToTastings
                 .Include(p => p.Product)
                 .Include(p => p.Tasting)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
+                .FirstOrDefaultAsync(m => m.ProductId == id && m.TastingId == id2);
             if (productToTasting == null)
             {
                 return NotFound();
@@ -72,63 +72,8 @@ namespace LSA.Controllers
             return View(productToTasting);
         }
 
-        // GET: ProductsToTastings/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var productToTasting = await _context.ProductToTastings.FindAsync(id);
-            if (productToTasting == null)
-            {
-                return NotFound();
-            }
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId", productToTasting.ProductId);
-            ViewData["TastingId"] = new SelectList(_context.Tastings, "TastingId", "TastingId", productToTasting.TastingId);
-            return View(productToTasting);
-        }
-
-        // POST: ProductsToTastings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,TastingId")] ProductToTasting productToTasting)
-        {
-            if (id != productToTasting.ProductId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(productToTasting);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductToTastingExists(productToTasting.ProductId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId", productToTasting.ProductId);
-            ViewData["TastingId"] = new SelectList(_context.Tastings, "TastingId", "TastingId", productToTasting.TastingId);
-            return View(productToTasting);
-        }
-
         // GET: ProductsToTastings/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int? id2)
         {
             if (id == null)
             {
@@ -138,7 +83,7 @@ namespace LSA.Controllers
             var productToTasting = await _context.ProductToTastings
                 .Include(p => p.Product)
                 .Include(p => p.Tasting)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
+                .FirstOrDefaultAsync(m => m.ProductId == id && m.TastingId == id2);
             if (productToTasting == null)
             {
                 return NotFound();
@@ -150,9 +95,9 @@ namespace LSA.Controllers
         // POST: ProductsToTastings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id, int? id2)
         {
-            var productToTasting = await _context.ProductToTastings.FindAsync(id);
+            var productToTasting = await _context.ProductToTastings.FirstOrDefaultAsync(m => m.ProductId == id && m.TastingId == id2);
             _context.ProductToTastings.Remove(productToTasting);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

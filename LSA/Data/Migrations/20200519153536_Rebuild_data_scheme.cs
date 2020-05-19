@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace LSA.Migrations
+namespace LSA.Data.Migrations
 {
-    public partial class Builddatascheme : Migration
+    public partial class Rebuild_data_scheme : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -195,6 +195,30 @@ namespace LSA.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductToTastings",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(nullable: false),
+                    TastingId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductToTastings", x => new { x.ProductId, x.TastingId });
+                    table.ForeignKey(
+                        name: "FK_ProductToTastings_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductToTastings_Tastings_TastingId",
+                        column: x => x.TastingId,
+                        principalTable: "Tastings",
+                        principalColumn: "TastingId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TasterToTastings",
                 columns: table => new
                 {
@@ -306,6 +330,11 @@ namespace LSA.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductToTastings_TastingId",
+                table: "ProductToTastings",
+                column: "TastingId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TasterToTastings_TastingId",
                 table: "TasterToTastings",
                 column: "TastingId");
@@ -342,6 +371,9 @@ namespace LSA.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "ProductToTastings");
 
             migrationBuilder.DropTable(
                 name: "TasterToTastings");

@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace LSA.Migrations
+namespace LSA.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200518072618_Build data scheme")]
-    partial class Builddatascheme
+    [Migration("20200519153536_Rebuild_data_scheme")]
+    partial class Rebuild_data_scheme
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,6 +34,21 @@ namespace LSA.Migrations
                     b.HasKey("ProductId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("LSA.Entities.ProductToTasting", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TastingId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "TastingId");
+
+                    b.HasIndex("TastingId");
+
+                    b.ToTable("ProductToTastings");
                 });
 
             modelBuilder.Entity("LSA.Entities.Taster", b =>
@@ -365,6 +380,21 @@ namespace LSA.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("LSA.Entities.ProductToTasting", b =>
+                {
+                    b.HasOne("LSA.Entities.Product", "Product")
+                        .WithMany("ProductToTastings")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LSA.Entities.Tasting", "Tasting")
+                        .WithMany("ProductToTastings")
+                        .HasForeignKey("TastingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LSA.Entities.TasterToTasting", b =>

@@ -27,7 +27,7 @@ namespace LSA.Controllers
         }
 
         // GET: TastersToTastings/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? id2)
         {
             if (id == null)
             {
@@ -37,7 +37,7 @@ namespace LSA.Controllers
             var tasterToTasting = await _context.TasterToTastings
                 .Include(t => t.Taster)
                 .Include(t => t.Tasting)
-                .FirstOrDefaultAsync(m => m.TasterId == id);
+                .FirstOrDefaultAsync(m => m.TasterId == id && m.TastingId == id2);
             if (tasterToTasting == null)
             {
                 return NotFound();
@@ -72,63 +72,8 @@ namespace LSA.Controllers
             return View(tasterToTasting);
         }
 
-        // GET: TastersToTastings/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tasterToTasting = await _context.TasterToTastings.FindAsync(id);
-            if (tasterToTasting == null)
-            {
-                return NotFound();
-            }
-            ViewData["TasterId"] = new SelectList(_context.Tasters, "TasterId", "TasterName", tasterToTasting.TasterId);
-            ViewData["TastingId"] = new SelectList(_context.Tastings, "TastingId", "TastingId", tasterToTasting.TastingId);
-            return View(tasterToTasting);
-        }
-
-        // POST: TastersToTastings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TasterId,TastingId")] TasterToTasting tasterToTasting)
-        {
-            if (id != tasterToTasting.TasterId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tasterToTasting);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TasterToTastingExists(tasterToTasting.TasterId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["TasterId"] = new SelectList(_context.Tasters, "TasterId", "TasterName", tasterToTasting.TasterId);
-            ViewData["TastingId"] = new SelectList(_context.Tastings, "TastingId", "TastingId", tasterToTasting.TastingId);
-            return View(tasterToTasting);
-        }
-
         // GET: TastersToTastings/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int? id2)
         {
             if (id == null)
             {
@@ -138,7 +83,7 @@ namespace LSA.Controllers
             var tasterToTasting = await _context.TasterToTastings
                 .Include(t => t.Taster)
                 .Include(t => t.Tasting)
-                .FirstOrDefaultAsync(m => m.TasterId == id);
+                .FirstOrDefaultAsync(m => m.TasterId == id && m.TastingId == id2);
             if (tasterToTasting == null)
             {
                 return NotFound();
@@ -150,9 +95,9 @@ namespace LSA.Controllers
         // POST: TastersToTastings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int id2)
         {
-            var tasterToTasting = await _context.TasterToTastings.FindAsync(id);
+            var tasterToTasting = await _context.TasterToTastings.FirstOrDefaultAsync(m => m.TasterId == id && m.TastingId == id2);
             _context.TasterToTastings.Remove(tasterToTasting);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
