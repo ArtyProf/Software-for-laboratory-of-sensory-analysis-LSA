@@ -7,21 +7,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LSA.Data;
 using LSA.Entities;
-using LSA.Services;
 using LSA.Interfaces;
+using LSA.Helpers;
 
 namespace LSA.Controllers
 {
     public class TastingHistoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly ITastingHistory _tastingHistoryService;
 
-        public TastingHistoriesController(ApplicationDbContext context,
-                                            ITastingHistory tastingHistoryService)
+        public TastingHistoriesController(ApplicationDbContext context)
         {
             _context = context;
-            _tastingHistoryService = tastingHistoryService;
         }
 
         // GET: TastingHistories
@@ -30,7 +27,18 @@ namespace LSA.Controllers
             return View(await _context.TastingHistory.ToListAsync());
         }
 
-        
+        // GET: TastingHistories/TastingEnding
+        public IActionResult TastingEnding()
+        {
+            return View();
+        }
+
+        // GET: TastingHistories/BlockchainError
+        public IActionResult BlockchainError()
+        {
+            return View();
+        }
+
         // GET: TastingHistories/Create
         public IActionResult Create()
         {
@@ -46,7 +54,92 @@ namespace LSA.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _tastingHistoryService.CreateTastingHistory(tastingHistory);
+                if (tastingHistory == null)
+                    throw new ArgumentNullException(nameof(tastingHistory));
+
+                var tastingHistories = await _context.TastingHistory.ToListAsync();
+
+                BlockChainHelper.VerifyBlockChain(tastingHistories);
+                if (tastingHistories.Any(c => !c.IsValid))
+                {
+                    return RedirectToAction(nameof(BlockchainError));
+                }
+
+                string previousBlockHash = null;
+                if (tastingHistories.Any())
+                {
+                    var previousTastingHistory = tastingHistories.Last();
+                    tastingHistory.TastingHistoryPreviousId = previousTastingHistory.TastingHistoryId;
+                    previousBlockHash = previousTastingHistory.Hash;
+                }
+
+                int tastingId = await _context.Tastings.Where(c => c.IsFinished == false).Select(d => d.TastingId).FirstAsync();
+
+                tastingHistory.TastingId = tastingId;
+
+                int tasterId = 1;
+                tastingHistory.TasterId = tasterId;
+
+                List<int> productIds = await _context.ProductToTastings.Where(c => c.TastingId == tastingId).Select(d => d.ProductId).ToListAsync();
+
+                List<int?> productIdsTastingHistory = await _context.TastingHistory.Where(c => c.TastingId == tastingId) //&& c.TasterId == tasterId (add later)
+                                                                                   .Select(d => d.ProductId)
+                                                                                   .ToListAsync();
+
+                int productId = 0;
+
+                if (productIds.Count > productIdsTastingHistory.Count)
+                {
+                    int dif = productIds.Count - productIdsTastingHistory.Count;
+
+                    productId = productIds[productIds.Count - dif];
+                }
+
+                if (productIds.Count == productIdsTastingHistory.Count)
+                {
+                    return RedirectToAction(nameof(TastingEnding));
+                }
+
+                tastingHistory.ProductId = productId;
+
+                tastingHistory.TransactionDate = DateTime.Now;
+
+                var blockText = BlockHelper.ConcatData(tastingHistory.ViewProse,
+                        tastingHistory.ViewColour, tastingHistory.BouquetClean, tastingHistory.BouquetIntensity,
+                        tastingHistory.BouquetQuality, tastingHistory.TasteColour, tastingHistory.TasteQuality,
+                        tastingHistory.TasteIntensity, tastingHistory.TasteAftertaste, tastingHistory.TastePotencial,
+                        tastingHistory.Garmony, tastingHistory.Penalty, tastingHistory.TransactionDate, previousBlockHash);
+                tastingHistory.Hash = HashHelper.Hash(blockText);
+
+                TastingHistory itemOnSave = _context.TastingHistory.Where
+                         (x => x.TastingHistoryId == tastingHistory.TastingHistoryId).FirstOrDefault();
+
+                itemOnSave = new TastingHistory()
+                {
+                    ViewProse = tastingHistory.ViewProse,
+                    ViewColour = tastingHistory.ViewColour,
+                    BouquetClean = tastingHistory.BouquetClean,
+                    BouquetIntensity = tastingHistory.BouquetIntensity,
+                    BouquetQuality = tastingHistory.BouquetQuality,
+                    TasteColour = tastingHistory.TasteColour,
+                    TasteQuality = tastingHistory.TasteQuality,
+                    TasteIntensity = tastingHistory.TasteIntensity,
+                    TasteAftertaste = tastingHistory.TasteAftertaste,
+                    TastePotencial = tastingHistory.TastePotencial,
+                    Garmony = tastingHistory.Garmony,
+                    Penalty = tastingHistory.Penalty,
+                    TransactionDate = tastingHistory.TransactionDate,
+                    Hash = tastingHistory.Hash,
+                    TasterId = tastingHistory.TasterId,
+                    TastingId = tastingHistory.TastingId,
+                    ProductId = tastingHistory.ProductId,
+                    TastingHistoryPreviousId = tastingHistory.TastingHistoryPreviousId,
+                };
+
+                _context.TastingHistory.Add(itemOnSave);
+
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(tastingHistory);
