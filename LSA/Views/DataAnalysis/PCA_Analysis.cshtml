@@ -1,0 +1,36 @@
+﻿@model LSA.Entities.FileInformation
+@{
+    ViewData["Title"] = "PCA_Analysis";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>PCA_Analysis</h1>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                PC1
+            </th>
+            <th>
+                PC2
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < ViewBag.rows; i++)
+        {
+            <tr>
+                @for (int j = 0; j < ViewBag.columns; j++)
+                {
+                    <td>
+                        @Html.Raw(ViewBag.data[i][j])
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
