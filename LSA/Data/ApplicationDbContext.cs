@@ -13,7 +13,7 @@ namespace LSA.Data
             : base(options)
         {
         }
-
+        public DbSet<FileInformation> FilesInformation { get; set; }
         public DbSet<Taster> Tasters{ get; set; }
         public DbSet<Tasting> Tastings { get; set; }
         public DbSet<TasterToTasting> TasterToTastings { get; set; }
