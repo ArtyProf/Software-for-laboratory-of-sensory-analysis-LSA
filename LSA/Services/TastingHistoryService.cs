@@ -44,9 +44,25 @@ namespace LSA.Services
 
             tastingHistory.TastingId = tastingId;
 
-            tastingHistory.ProductId = 1;
+            int tasterId = 1;
+            tastingHistory.TasterId = tasterId;
 
-            tastingHistory.TasterId = 1;
+            List<int> productIds = await _context.ProductToTastings.Where(c => c.TastingId == tastingId).Select(d => d.ProductId).ToListAsync();
+
+            List<int?> productIdsTastingHistory = await _context.TastingHistory.Where(c => c.TastingId == tastingId) //&& c.TasterId == tasterId (add later)
+                                                                               .Select(d => d.ProductId)
+                                                                               .ToListAsync();
+
+            int productId = 0;
+
+            if (productIds.Count > productIdsTastingHistory.Count)
+            {
+                int dif = productIds.Count - productIdsTastingHistory.Count;
+
+                productId = productIds[productIds.Count- dif];
+            }
+
+            tastingHistory.ProductId = productId;
 
             tastingHistory.TransactionDate = DateTime.Now;
 
