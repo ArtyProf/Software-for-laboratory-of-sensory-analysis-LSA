@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LSA.Data;
 using LSA.Entities;
+using LSA.Interfaces;
 
 namespace LSA.Controllers
 {
     public class TastersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IUserAccessService _userAccessService;
 
-        public TastersController(ApplicationDbContext context)
+        public TastersController(ApplicationDbContext context,
+                                 IUserAccessService userAccessService)
         {
             _context = context;
+            _userAccessService = userAccessService;
         }
 
         // GET: Tasters
@@ -54,10 +58,17 @@ namespace LSA.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TasterId,TasterName,TasterEmail,TasterSecondName")] Taster taster)
+        public async Task<IActionResult> Create([Bind("TasterId,TasterName,TasterEmail,TasterSecondName")] Taster taster, string password)
         {
             if (ModelState.IsValid)
             {
+                var result = await _userAccessService.RegisterUserFromForm(taster.TasterEmail, password);
+
+                if (!result)
+                {
+                    return RedirectToAction("ErrorPage", "Home", new { message = "Something going wrong. Please check that user can exist already." });
+                }
+
                 _context.Add(taster);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

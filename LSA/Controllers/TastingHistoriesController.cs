@@ -27,18 +27,6 @@ namespace LSA.Controllers
             return View(await _context.TastingHistory.ToListAsync());
         }
 
-        // GET: TastingHistories/TastingEnding
-        public IActionResult TastingEnding()
-        {
-            return View();
-        }
-
-        // GET: TastingHistories/BlockchainError
-        public IActionResult BlockchainError()
-        {
-            return View();
-        }
-
         // GET: TastingHistories/Create
         public IActionResult Create()
         {
@@ -62,7 +50,7 @@ namespace LSA.Controllers
                 BlockChainHelper.VerifyBlockChain(tastingHistories);
                 if (tastingHistories.Any(c => !c.IsValid))
                 {
-                    return RedirectToAction(nameof(BlockchainError));
+                    return RedirectToAction("ErrorPage", "Home", new { message = "Something going wrong. Blockchain was corrupted!" });
                 }
 
                 string previousBlockHash = null;
@@ -77,7 +65,7 @@ namespace LSA.Controllers
 
                 tastingHistory.TastingId = tastingId;
 
-                int tasterId = 1;
+                int tasterId = 3;
                 tastingHistory.TasterId = tasterId;
 
                 List<int> productIds = await _context.ProductToTastings.Where(c => c.TastingId == tastingId).Select(d => d.ProductId).ToListAsync();
@@ -97,7 +85,7 @@ namespace LSA.Controllers
 
                 if (productIds.Count == productIdsTastingHistory.Count)
                 {
-                    return RedirectToAction(nameof(TastingEnding));
+                    return RedirectToAction("ErrorPage", "Home", new { message = "Something going wrong. Seems you tasted all products. Tasting is ended. Thank you!" });
                 }
 
                 tastingHistory.ProductId = productId;
@@ -139,6 +127,11 @@ namespace LSA.Controllers
                 _context.TastingHistory.Add(itemOnSave);
 
                 await _context.SaveChangesAsync();
+
+                if (productIds.Count == productIdsTastingHistory.Count + 1)
+                {
+                    return RedirectToAction("ErrorPage", "Home", new { message = "Seems you tasted all products. Tasting is ended. Thank you!" });
+                }
 
                 return RedirectToAction(nameof(Index));
             }

@@ -33,5 +33,12 @@ namespace LSA.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpGet("Home/ErrorPage/{message}")]
+        public IActionResult ErrorPage(string message)
+        {
+            ViewBag.ErrorMessage = message;
+            return View();
+        }
     }
 }
