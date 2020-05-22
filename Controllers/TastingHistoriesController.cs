@@ -9,16 +9,24 @@ using LSA.Data;
 using LSA.Entities;
 using LSA.Interfaces;
 using LSA.Helpers;
+using Microsoft.AspNetCore.Identity;
+using LSA.Services;
 
 namespace LSA.Controllers
 {
     public class TastingHistoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUserAccessService _userAccessService;
 
-        public TastingHistoriesController(ApplicationDbContext context)
+        public TastingHistoriesController(ApplicationDbContext context,
+                                          UserManager<IdentityUser> userManager,
+                                          IUserAccessService userAccessService)
         {
             _context = context;
+            _userManager = userManager;
+            _userAccessService = userAccessService;
         }
 
         // GET: TastingHistories
@@ -28,8 +36,32 @@ namespace LSA.Controllers
         }
 
         // GET: TastingHistories/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            int tastingId = await _userAccessService.GetTastingId();
+
+            int tasterId = await GetTasterId();
+
+            List<int> assignedTasterIds = await _context.TasterToTastings.Where(c => c.TastingId == tastingId).Select(d => d.TasterId).ToListAsync();
+
+            bool tasterIsAsiggned = false;
+            if (assignedTasterIds.Count > 0)
+            {
+                for (int i = 0; i < assignedTasterIds.Count; i++)
+                {
+                    if (assignedTasterIds[i] == tasterId)
+                    {
+                        tasterIsAsiggned = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!tasterIsAsiggned)
+            {
+                return RedirectToAction("ErrorPage", "Home", new { message = "Something going wrong. You are not assigned for tasting!" });
+            }
+
             return View();
         }
 
@@ -61,16 +93,17 @@ namespace LSA.Controllers
                     previousBlockHash = previousTastingHistory.Hash;
                 }
 
-                int tastingId = await _context.Tastings.Where(c => c.IsFinished == false).Select(d => d.TastingId).FirstAsync();
+                int tastingId = await _userAccessService.GetTastingId();
 
                 tastingHistory.TastingId = tastingId;
 
-                int tasterId = 3;
+                int tasterId = await GetTasterId();
+
                 tastingHistory.TasterId = tasterId;
 
                 List<int> productIds = await _context.ProductToTastings.Where(c => c.TastingId == tastingId).Select(d => d.ProductId).ToListAsync();
 
-                List<int?> productIdsTastingHistory = await _context.TastingHistory.Where(c => c.TastingId == tastingId) //&& c.TasterId == tasterId (add later)
+                List<int?> productIdsTastingHistory = await _context.TastingHistory.Where(c => c.TastingId == tastingId && c.TasterId == tasterId)
                                                                                    .Select(d => d.ProductId)
                                                                                    .ToListAsync();
 
@@ -141,6 +174,12 @@ namespace LSA.Controllers
         private bool TastingHistoryExists(int id)
         {
             return _context.TastingHistory.Any(e => e.TastingHistoryId == id);
+        }
+
+        public async Task<int> GetTasterId()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            return await _context.Tasters.Where(c => c.TasterEmail == currentUser.UserName).Select(d => d.TasterId).FirstAsync();
         }
     }
 }

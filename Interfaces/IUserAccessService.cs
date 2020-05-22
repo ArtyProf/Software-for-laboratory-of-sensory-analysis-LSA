@@ -9,5 +9,6 @@ namespace LSA.Interfaces
     {
         Task<bool> RegisterUserFromForm(string email, string password);
         public bool IsUserExistByEmail(string userEmail);
+        Task<int> GetTastingId();
     }
 }

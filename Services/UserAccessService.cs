@@ -1,6 +1,8 @@
 ﻿using LSA.Data;
 using LSA.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +12,15 @@ namespace LSA.Services
 {
     public class UserAccessService : IUserAccessService
     {
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserAccessService(UserManager<IdentityUser> userManager,
+        public UserAccessService(ApplicationDbContext context,
+                                 UserManager<IdentityUser> userManager,
                                  RoleManager<IdentityRole> roleManager)
         {
+            _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
         }
@@ -67,6 +72,11 @@ namespace LSA.Services
             }
 
             return false;
+        }
+
+        public async Task<int> GetTastingId()
+        {
+            return await _context.Tastings.Where(c => c.IsFinished == false).Select(d => d.TastingId).FirstAsync();
         }
     }
 }

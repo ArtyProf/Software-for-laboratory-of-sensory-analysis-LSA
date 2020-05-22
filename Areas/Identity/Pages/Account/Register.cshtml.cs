@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using LSA.Data;
+using LSA.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +21,7 @@ namespace LSA.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
+        private readonly ApplicationDbContext _context;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
@@ -26,12 +29,14 @@ namespace LSA.Areas.Identity.Pages.Account
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
+            ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             RoleManager<IdentityRole> roleManager)
         {
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
@@ -113,6 +118,13 @@ namespace LSA.Areas.Identity.Pages.Account
                     }
 
                     await _userManager.AddToRoleAsync(user, "Taster");
+
+                    if (await _userManager.IsInRoleAsync(user, "Taster")) 
+                    {
+                        var taster = new Taster { TasterEmail = Input.Email};
+                        _context.Add(taster);
+                        await _context.SaveChangesAsync();
+                    }
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
