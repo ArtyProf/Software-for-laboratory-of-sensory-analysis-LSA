@@ -9,6 +9,24 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    var pc1 = @Html.Raw(Json.Serialize(ViewBag.PC1));
+    var pc2 = @Html.Raw(Json.Serialize(ViewBag.PC2));
+    var pc3 = @Html.Raw(Json.Serialize(ViewBag.PC3));
+
+    window.addEventListener("load", () => {
+      draw3dGraphPCA(pc1,pc2,pc3);
+    });
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="align-middle" id="mygraph" style="width: 100%;height: 800px;"></div>
+
+        <div id="info"></div>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -17,6 +35,9 @@
             </th>
             <th>
                 PC2
+            </th>
+            <th>
+                PC3
             </th>
         </tr>
     </thead>

@@ -70,12 +70,30 @@ namespace LSA.Controllers
 
             var pcaTool = new KernelPrincipalComponentAnalysis();
             pcaTool.Learn(actual);
-            pcaTool.NumberOfOutputs = 2;
+            pcaTool.NumberOfOutputs = 3;
             var outputMatrix = pcaTool.Transform(actual);
 
             ViewBag.data = outputMatrix;
             ViewBag.columns = pcaTool.NumberOfOutputs;
             ViewBag.rows = outputMatrix.Length;
+
+            List<double> PC1 = new List<double>();
+            List<double> PC2 = new List<double>();
+            List<double> PC3 = new List<double>();
+
+            for (int i = 0; i < outputMatrix.Length; i++)
+            {
+                for (int j = 0; j < pcaTool.NumberOfOutputs; j+=3)
+                {
+                    PC1.Add(ViewBag.data[i][j]);
+                    PC2.Add(ViewBag.data[i][j + 1]);
+                    PC3.Add(ViewBag.data[i][j + 2]);
+                }  
+            }
+
+            ViewBag.PC1 = PC1;
+            ViewBag.PC2 = PC2;
+            ViewBag.PC3 = PC3;
 
             return View();
         }
