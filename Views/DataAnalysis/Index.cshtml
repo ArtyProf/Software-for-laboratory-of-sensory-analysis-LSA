@@ -35,8 +35,8 @@
                     @Html.DisplayFor(modelItem => item.Path)
                 </td>
                 <td>
-                    <a asp-action="PCA_Analysis" asp-route-id="@item.Id">PCA Analysis</a> |
-                    <a asp-action="KMeans_Analysis" asp-route-id="@item.Id">K-Means Analysis</a> |
+                    <a asp-action="PcaAnalysis" asp-route-id="@item.Id">PCA Analysis</a> |
+                    <a asp-action="KmeansAnalysis" asp-route-id="@item.Id">K-Means Analysis</a> |
                     <a asp-action="Combined_Analysis" asp-route-id="@item.Id">Combined Analysis</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>

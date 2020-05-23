@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Accord.IO;
+using Accord.MachineLearning;
 using Accord.Statistics.Analysis;
 using LSA.Data;
 using LSA.Entities;
@@ -49,8 +51,8 @@ namespace LSA.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: DataAnalysis/PCA_Analysis/5
-        public async Task<IActionResult> PCA_Analysis(int? id)
+        // GET: DataAnalysis/PCA_Analysis/id
+        public async Task<IActionResult> PcaAnalysis(int? id)
         {
             if (id == null)
             {
@@ -96,6 +98,82 @@ namespace LSA.Controllers
             ViewBag.PC3 = PC3;
 
             return View();
+        }
+
+        // GET: DataAnalysis/PCA_Analysis/id
+        public async Task<IActionResult> KmeansAnalysis(int? id, int? numOfClusters)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var dataAnalysis = await _context.FilesInformation.FindAsync(id);
+            if (dataAnalysis == null)
+            {
+                return NotFound();
+            }
+
+            string path = await _context.FilesInformation.Where(m => m.Id == id).Select(d => d.Path).FirstOrDefaultAsync();
+
+            CsvReader reader = new CsvReader(_appEnvironment.WebRootPath + path, hasHeaders: true);
+            DataTable dataTable = reader.ToTable();
+            var headers = reader.GetFieldHeaders();
+
+            double[][] arrayOfData = dataTable.AsEnumerable().Select(x => new[] { Convert.ToDouble(x[headers[0]]), Convert.ToDouble(x[headers[1]]), Convert.ToDouble(x[headers[2]]) }).ToArray();
+
+            int numOfClustersOnPost = numOfClusters ?? default(int);
+
+            if (numOfClusters == null)
+            {
+                numOfClustersOnPost = 3;
+            }
+
+            // Create a new K-Means algorithm
+            KMeans kmeans = new KMeans(k: numOfClustersOnPost);
+
+            // Compute and retrieve the data centroids
+            var clusters = kmeans.Learn(arrayOfData);
+
+            // Use the centroids to parition all the data
+            int[] clusterId = clusters.Decide(arrayOfData);
+
+            ViewBag.data = arrayOfData;
+            ViewBag.columns = 3;
+            ViewBag.rows = arrayOfData.Length;
+
+            List<double> field1 = new List<double>();
+            List<double> field2 = new List<double>();
+            List<double> field3 = new List<double>();
+
+            for (int i = 0; i < ViewBag.data.Length; i++)
+            {
+                for (int j = 0; j < ViewBag.columns; j += 3)
+                {
+                    field1.Add(ViewBag.data[i][j]);
+                    field2.Add(ViewBag.data[i][j + 1]);
+                    field3.Add(ViewBag.data[i][j + 2]);
+                }
+            }
+
+            ViewBag.field1 = field1;
+            ViewBag.field2 = field2;
+            ViewBag.field3 = field3;
+            ViewBag.nameField1 = headers[0];
+            ViewBag.nameField2 = headers[1];
+            ViewBag.nameField3 = headers[2];
+
+            ViewBag.clusters = clusterId;
+
+            return View();
+        }
+
+        // POST: DataAnalysis/PCA_Analysis/id
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> SelectNumOfClusters(int? id, int? numOfClusters)
+        {
+            return KmeansAnalysis(id, numOfClusters);
         }
 
         // GET: DataAnalysis/Delete/5

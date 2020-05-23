@@ -1,6 +1,6 @@
 ﻿@model LSA.Entities.FileInformation
 @{
-    ViewData["Title"] = "PCA_Analysis";
+    ViewData["Title"] = "PcaAnalysis";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -19,9 +19,10 @@
       draw3dGraphPCA(pc1,pc2,pc3);
     });
 </script>
+
 <div class="row">
     <div class="col-md-12">
-        <div class="align-middle" id="mygraph" style="width: 100%;height: 800px;"></div>
+        <div class="align-middle" id="mygraph" style="width: 100%;height: 600px; font-weight:600"></div>
 
         <div id="info"></div>
     </div>
