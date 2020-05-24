@@ -19,11 +19,6 @@
                 <input asp-for="TastingName" class="form-control" />
                 <span asp-validation-for="TastingName" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsFinished" /> @Html.DisplayNameFor(model => model.IsFinished)
-                </label>
-            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

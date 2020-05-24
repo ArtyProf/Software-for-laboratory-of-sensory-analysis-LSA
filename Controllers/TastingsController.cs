@@ -19,8 +19,14 @@ namespace LSA.Controllers
             _context = context;
         }
 
-        // GET: Tastings
+        // GET: Tastings/Index
         public async Task<IActionResult> Index()
+        {
+            return View(await _context.Tastings.Where(a => a.IsFinished == false).ToListAsync());
+        }
+
+        // GET: Tastings/All
+        public async Task<IActionResult> All ()
         {
             return View(await _context.Tastings.ToListAsync());
         }
@@ -44,8 +50,15 @@ namespace LSA.Controllers
         }
 
         // GET: Tastings/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var tastings = await _context.Tastings.ToListAsync();
+
+            if (tastings.Any(c => c.IsFinished == false))
+            {
+                return RedirectToAction("ErrorPage", "Home", new { message = "Something going wrong. You can not create a new tasting, if you do not finish active one!" });
+            }
+
             return View();
         }
 
@@ -54,7 +67,7 @@ namespace LSA.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TastingId,TastingName,IsFinished")] Tasting tasting)
+        public async Task<IActionResult> Create([Bind("TastingId,TastingName")] Tasting tasting)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +99,7 @@ namespace LSA.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TastingId,TastingName,IsFinished")] Tasting tasting)
+        public async Task<IActionResult> Edit(int id, [Bind("TastingId,TastingName")] Tasting tasting)
         {
             if (id != tasting.TastingId)
             {
@@ -143,6 +156,48 @@ namespace LSA.Controllers
             _context.Tastings.Remove(tasting);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> TastingResult(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tasting = await _context.Tastings.FindAsync(id);
+            if (tasting == null)
+            {
+                return NotFound();
+            }
+
+            List<int> products = await _context.ProductToTastings.Where(a => a.TastingId == id).Select(b => b.ProductId).ToListAsync();
+            int tasters = _context.TastingHistory.Where(a => a.TastingId == id).Select(b => b.TasterId).Distinct().Count();
+
+            List<double> results = new List<double>();
+
+            for (int i = 0; i < products.Count; i++)
+            {
+                int viewColour = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.ViewColour).Sum();
+                int viewProse = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.ViewProse).Sum();
+                int bouquetClean = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.BouquetClean).Sum();
+                int bouquetIntensity = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.BouquetIntensity).Sum();
+                int bouquetQuality = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.BouquetQuality).Sum();
+                int tasteColour = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.TasteColour).Sum();
+                int tasteIntensity = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.TasteIntensity).Sum();
+                int tasteAftertaste = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.TasteAftertaste).Sum();
+                int tastePotencial = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.TastePotencial).Sum();
+                int tasteQuality = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.TasteQuality).Sum();
+                int garmony = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.Garmony).Sum();
+                int penalty = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.Penalty).Sum();
+
+                double result = (viewColour + viewProse + bouquetClean + bouquetIntensity + bouquetQuality + tasteColour + tasteIntensity + tasteAftertaste + tastePotencial + tasteQuality + garmony + penalty) / tasters;
+                results.Add(result);
+            }
+
+            ViewBag.results = results;
+
+            return View();
         }
 
         private bool TastingExists(int id)
