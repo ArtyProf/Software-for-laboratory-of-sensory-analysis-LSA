@@ -100,7 +100,7 @@ namespace LSA.Controllers
             return View();
         }
 
-        // GET: DataAnalysis/PCA_Analysis/id
+        // GET: DataAnalysis/KmeansAnalysis/id
         public async Task<IActionResult> KmeansAnalysis(int? id, int? numOfClusters)
         {
             if (id == null)
@@ -168,12 +168,82 @@ namespace LSA.Controllers
             return View();
         }
 
-        // POST: DataAnalysis/PCA_Analysis/id
+        // POST: DataAnalysis/KmeansAnalysis/id
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public Task<IActionResult> SelectNumOfClusters(int? id, int? numOfClusters)
+        public Task<IActionResult> SelectNumOfClustersForKmeansAnalysis(int? id, int? numOfClusters)
         {
             return KmeansAnalysis(id, numOfClusters);
+        }
+
+        // GET: DataAnalysis/CombinedAnalysis/id
+        public async Task<IActionResult> CombinedAnalysis(int? id, int? numOfClusters)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var dataAnalysis = await _context.FilesInformation.FindAsync(id);
+            if (dataAnalysis == null)
+            {
+                return NotFound();
+            }
+
+            string path = await _context.FilesInformation.Where(m => m.Id == id).Select(d => d.Path).FirstOrDefaultAsync();
+
+            CsvReader reader = new CsvReader(_appEnvironment.WebRootPath + path, hasHeaders: true);
+            double[][] actual = reader.ToJagged();
+
+            var pcaTool = new KernelPrincipalComponentAnalysis();
+            pcaTool.Learn(actual);
+            pcaTool.NumberOfOutputs = 3;
+            var outputMatrix = pcaTool.Transform(actual);
+
+            int numOfClustersOnPost = numOfClusters ?? default(int);
+
+            if (numOfClusters == null)
+            {
+                numOfClustersOnPost = 3;
+            }
+
+            KMeans kmeans = new KMeans(k: numOfClustersOnPost);
+            var clusters = kmeans.Learn(outputMatrix);
+            int[] clusterId = clusters.Decide(outputMatrix);
+
+            ViewBag.data = outputMatrix;
+            ViewBag.columns = pcaTool.NumberOfOutputs;
+            ViewBag.rows = outputMatrix.Length;
+
+            List<double> pc1 = new List<double>();
+            List<double> pc2 = new List<double>();
+            List<double> pc3 = new List<double>();
+
+            for (int i = 0; i < ViewBag.data.Length; i++)
+            {
+                for (int j = 0; j < ViewBag.columns; j += 3)
+                {
+                    pc1.Add(ViewBag.data[i][j]);
+                    pc2.Add(ViewBag.data[i][j + 1]);
+                    pc3.Add(ViewBag.data[i][j + 2]);
+                }
+            }
+
+            ViewBag.pc1 = pc1;
+            ViewBag.pc2 = pc2;
+            ViewBag.pc3 = pc3;
+
+            ViewBag.clusters = clusterId;
+
+            return View();
+        }
+
+        // POST: DataAnalysis/CombinedAnalysis/id
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> SelectNumOfClustersForCombinedAnalysis(int? id, int? numOfClusters)
+        {
+            return CombinedAnalysis(id, numOfClusters);
         }
 
         // GET: DataAnalysis/Delete/5

@@ -1,0 +1,82 @@
+﻿@model LSA.Entities.FileInformation
+
+@{
+    ViewData["Title"] = "CombinedAnalysis";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>CombinedAnalysis</h1>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script>
+    var pc1 = @Html.Raw(Json.Serialize(ViewBag.pc1));
+    var pc2 = @Html.Raw(Json.Serialize(ViewBag.pc2));
+    var pc3 = @Html.Raw(Json.Serialize(ViewBag.pc3));
+    var clusters = @Html.Raw(Json.Serialize(ViewBag.clusters));
+
+    window.addEventListener("load", () => {
+      draw3dGraphPcaAndKmeans(pc1,pc2,pc3,clusters);
+    });
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <h4>Select desired number of clusters</h4>
+        <form asp-action="CombinedAnalysis">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="numOfClusters" value="3">
+                <label class="form-check-label" for="inlineRadio1">3</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="numOfClusters" value="4">
+                <label class="form-check-label" for="inlineRadio2">4</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="numOfClusters" value="5">
+                <label class="form-check-label" for="inlineRadio1">5</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="numOfClusters" value="6">
+                <label class="form-check-label" for="inlineRadio2">6</label>
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <input type="submit" value="Select" class="btn btn-primary" />
+            </div>
+        </form>
+        <div class="align-middle" id="mygraph" style="width: 100%;height: 600px; font-weight:600"></div>
+
+        <div id="info"></div>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                PC1
+            </th>
+            <th>
+                PC2
+            </th>
+            <th>
+                PC3
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < ViewBag.rows; i++)
+        {
+            <tr>
+                @for (int j = 0; j < ViewBag.columns; j++)
+                {
+                    <td>
+                        @Html.Raw(ViewBag.data[i][j])
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
