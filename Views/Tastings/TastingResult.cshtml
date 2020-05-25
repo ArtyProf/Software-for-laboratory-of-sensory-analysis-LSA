@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "TastingResult";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>TastingResult</h1>
+
+<p>
+    <a asp-action="All">All</a>
+</p>
+
+<script>
+    var results = @Html.Raw(Json.Serialize(ViewBag.results));
+    var products = @Html.Raw(Json.Serialize(ViewBag.products));
+
+    window.addEventListener("load", () => {
+      drawBarChartProductResults(results, products);
+    });
+
+</script>
+
+<canvas id="speedChart" width="600" height="400"></canvas>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Product Name
+            </th>
+            <th>
+                Product Mark
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < ViewBag.count; i++)
+        {
+            <tr>
+                <td>
+                    @Html.Raw(ViewBag.products[i])
+                </td>
+                <td>
+                    @Html.Raw(@ViewBag.results[i])
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

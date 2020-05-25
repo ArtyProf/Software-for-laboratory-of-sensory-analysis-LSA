@@ -169,3 +169,29 @@ function draw3dGraphPcaAndKmeans(pc1, pc2, pc3, clusters) {
 
     drawVisualization();
 }
+
+function drawBarChartProductResults(results, products) {
+    var speedCanvas = document.getElementById("speedChart");
+    var densityData = {
+        label: 'Tasting mark',
+        data: results
+    };
+
+    var barChart = new Chart(speedCanvas, {
+        type: 'bar',
+        data: {
+            labels: products,
+            datasets: [densityData]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        suggestedMax: 100
+                    }
+                }]
+            }
+        }
+    });
+}

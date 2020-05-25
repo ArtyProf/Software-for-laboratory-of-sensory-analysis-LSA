@@ -31,7 +31,7 @@ namespace LSA.Controllers
             return View(await _context.Tastings.ToListAsync());
         }
 
-        // GET: Tastings/Details/5
+        // GET: Tastings/Details/{id}
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -78,7 +78,7 @@ namespace LSA.Controllers
             return View(tasting);
         }
 
-        // GET: Tastings/Edit/5
+        // GET: Tastings/Edit/{id}
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -94,7 +94,7 @@ namespace LSA.Controllers
             return View(tasting);
         }
 
-        // POST: Tastings/Edit/5
+        // POST: Tastings/Edit/{id}
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -129,7 +129,7 @@ namespace LSA.Controllers
             return View(tasting);
         }
 
-        // GET: Tastings/Delete/5
+        // GET: Tastings/Delete/{id}
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,7 +147,7 @@ namespace LSA.Controllers
             return View(tasting);
         }
 
-        // POST: Tastings/Delete/5
+        // POST: Tastings/Delete/{id}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -158,6 +158,7 @@ namespace LSA.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Tastings/TastingResult/{id}
         public async Task<IActionResult> TastingResult(int? id)
         {
             if (id == null)
@@ -174,6 +175,12 @@ namespace LSA.Controllers
             List<int> products = await _context.ProductToTastings.Where(a => a.TastingId == id).Select(b => b.ProductId).ToListAsync();
             int tasters = _context.TastingHistory.Where(a => a.TastingId == id).Select(b => b.TasterId).Distinct().Count();
 
+            List<string> productNames = new List<string>();
+            for (int i=0; i < products.Count; i++)
+            {
+                string productName = await _context.Products.Where(a => a.ProductId == products[i]).Select(b => b.ProductName).FirstAsync();
+                productNames.Add(productName);
+            }
             List<double> results = new List<double>();
 
             for (int i = 0; i < products.Count; i++)
@@ -194,8 +201,9 @@ namespace LSA.Controllers
                 double result = (viewColour + viewProse + bouquetClean + bouquetIntensity + bouquetQuality + tasteColour + tasteIntensity + tasteAftertaste + tastePotencial + tasteQuality + garmony + penalty) / tasters;
                 results.Add(result);
             }
-
+            ViewBag.count = results.Count;
             ViewBag.results = results;
+            ViewBag.products = productNames;
 
             return View();
         }
