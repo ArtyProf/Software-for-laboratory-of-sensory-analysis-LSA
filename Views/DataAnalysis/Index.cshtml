@@ -35,10 +35,10 @@
                     @Html.DisplayFor(modelItem => item.Path)
                 </td>
                 <td>
-                    <a asp-action="PcaAnalysis" asp-route-id="@item.Id">PCA Analysis</a> |
-                    <a asp-action="KmeansAnalysis" asp-route-id="@item.Id">K-Means Analysis</a> |
-                    <a asp-action="CombinedAnalysis" asp-route-id="@item.Id">Combined Analysis</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a class="btn btn-info" asp-action="PcaAnalysis" asp-route-id="@item.Id">PCA Analysis</a> |
+                    <a class="btn btn-info" asp-action="KmeansAnalysis" asp-route-id="@item.Id">K-Means Analysis</a> |
+                    <a class="btn btn-info" asp-action="CombinedAnalysis" asp-route-id="@item.Id">Combined Analysis</a> |
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }

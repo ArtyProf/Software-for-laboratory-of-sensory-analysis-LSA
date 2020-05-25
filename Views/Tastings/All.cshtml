@@ -8,7 +8,7 @@
 <h1>All Tastings</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-info" asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -33,10 +33,10 @@
                     @Html.DisplayFor(modelItem => item.IsFinished)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.TastingId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.TastingId">Details</a> |
-                    <a asp-action="TastingResult" asp-route-id="@item.TastingId">Tasting Result</a> |
-                    <a asp-action="Delete" asp-route-id="@item.TastingId">Delete</a>
+                    <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.TastingId">Edit</a> |
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.TastingId">Details</a> |
+                    <a class="btn btn-info" asp-action="TastingResult" asp-route-id="@item.TastingId">Tasting Result</a> |
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.TastingId">Delete</a>
                 </td>
             </tr>
         }

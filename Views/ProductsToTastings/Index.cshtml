@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+    <h1>Assign products to tasting</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-info" asp-action="Create">Assign New</a>
 </p>
 <table class="table">
     <thead>
@@ -26,10 +26,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.ProductId)
+                @Html.DisplayFor(modelItem => item.Product.ProductName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Tasting.TastingId)
+                @Html.DisplayFor(modelItem => item.Tasting.TastingName)
             </td>
             <td>
                 @Html.ActionLink("Details", "Details", new { id=item.Product.ProductId, id2=item.Tasting.TastingId }) |

@@ -49,8 +49,9 @@ namespace LSA.Controllers
         // GET: ProductsToTastings/Create
         public IActionResult Create()
         {
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId");
-            ViewData["TastingId"] = new SelectList(_context.Tastings, "TastingId", "TastingId");
+            ViewData["ProductId"] = new SelectList(_context.Products.Where(c => !_context.ProductToTastings
+                                                                    .Select(b => b.ProductId)
+                                                                    .Contains(c.ProductId)), "ProductId", "ProductName");
             return View();
         }
 
@@ -63,6 +64,7 @@ namespace LSA.Controllers
         {
             if (ModelState.IsValid)
             {
+                productToTasting.TastingId = _context.Tastings.Where(a => a.IsFinished == false).Select(b => b.TastingId).First();
                 _context.Add(productToTasting);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

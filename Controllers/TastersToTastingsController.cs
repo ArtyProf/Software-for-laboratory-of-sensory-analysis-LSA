@@ -49,8 +49,10 @@ namespace LSA.Controllers
         // GET: TastersToTastings/Create
         public IActionResult Create()
         {
-            ViewData["TasterId"] = new SelectList(_context.Tasters, "TasterId", "TasterName");
-            ViewData["TastingId"] = new SelectList(_context.Tastings, "TastingId", "TastingId");
+            ViewData["TasterId"] = new SelectList(_context.Tasters.Where(c => !_context.TasterToTastings
+                                                                   .Select(b => b.TasterId)
+                                                                   .Contains(c.TasterId)), "TasterId", "TasterName");
+
             return View();
         }
 
@@ -63,6 +65,7 @@ namespace LSA.Controllers
         {
             if (ModelState.IsValid)
             {
+                tasterToTasting.TastingId = _context.Tastings.Where(a => a.IsFinished == false).Select(b => b.TastingId).First();
                 _context.Add(tasterToTasting);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
