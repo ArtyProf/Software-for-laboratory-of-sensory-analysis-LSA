@@ -7,22 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LSA.Data;
 using LSA.Entities;
+using LSA.Interfaces;
 
 namespace LSA.Controllers
 {
     public class TastersToTastingsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IUserAccessService _userAccessService;
 
-        public TastersToTastingsController(ApplicationDbContext context)
+        public TastersToTastingsController(ApplicationDbContext context,
+                                           IUserAccessService userAccessService)
         {
             _context = context;
+            _userAccessService = userAccessService;
         }
 
         // GET: TastersToTastings
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.TasterToTastings.Include(t => t.Taster).Include(t => t.Tasting);
+            int activeTasting = await _userAccessService.GetTastingId();
+            var applicationDbContext = _context.TasterToTastings.Include(t => t.Taster).Include(t => t.Tasting).Where(a => a.TastingId == activeTasting);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -47,11 +52,20 @@ namespace LSA.Controllers
         }
 
         // GET: TastersToTastings/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["TasterId"] = new SelectList(_context.Tasters.Where(c => !_context.TasterToTastings
+
+            int activeTasting = await _userAccessService.GetTastingId();
+            var unassignedTasters = new SelectList(_context.Tasters.Where(c => !_context.TasterToTastings
+                                                                   .Where(a => a.TastingId == activeTasting)
                                                                    .Select(b => b.TasterId)
                                                                    .Contains(c.TasterId)), "TasterId", "TasterName");
+            ViewData["TasterId"] = unassignedTasters;
+
+            if (unassignedTasters.Count() < 1)
+            {
+                return RedirectToAction("ErrorPage", "Home", new { message = "There are not any tasters, who are not assigned to tasting!" });
+            }
 
             return View();
         }

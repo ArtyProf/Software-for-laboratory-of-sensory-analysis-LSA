@@ -7,22 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LSA.Data;
 using LSA.Entities;
+using LSA.Interfaces;
 
 namespace LSA.Controllers
 {
     public class ProductsToTastingsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IUserAccessService _userAccessService;
 
-        public ProductsToTastingsController(ApplicationDbContext context)
+        public ProductsToTastingsController(ApplicationDbContext context,
+                                           IUserAccessService userAccessService)
         {
             _context = context;
+            _userAccessService = userAccessService;
         }
 
         // GET: ProductsToTastings
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.ProductToTastings.Include(p => p.Product).Include(p => p.Tasting);
+            int activeTasting = await _userAccessService.GetTastingId();
+            var applicationDbContext = _context.ProductToTastings.Include(p => p.Product).Include(p => p.Tasting).Where(a => a.TastingId == activeTasting);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -47,11 +52,20 @@ namespace LSA.Controllers
         }
 
         // GET: ProductsToTastings/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["ProductId"] = new SelectList(_context.Products.Where(c => !_context.ProductToTastings
+            int activeTasting = await _userAccessService.GetTastingId();
+            var unassignedProducts = new SelectList(_context.Products.Where(c => !_context.ProductToTastings
+                                                                    .Where(a => a.TastingId == activeTasting)
                                                                     .Select(b => b.ProductId)
                                                                     .Contains(c.ProductId)), "ProductId", "ProductName");
+            ViewData["ProductId"] = unassignedProducts;
+
+            if (unassignedProducts.Count() < 1)
+            {
+                return RedirectToAction("ErrorPage", "Home", new { message = "There are not any products, which are not assigned to tasting!" });
+            }
+
             return View();
         }
 

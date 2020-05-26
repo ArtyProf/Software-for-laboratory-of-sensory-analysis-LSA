@@ -158,6 +158,36 @@ namespace LSA.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Tastings/FinishTasting/{id}
+        public async Task<IActionResult> Finish(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tasting = await _context.Tastings
+                .FirstOrDefaultAsync(m => m.TastingId == id);
+            if (tasting == null)
+            {
+                return NotFound();
+            }
+
+            return View(tasting);
+        }
+
+        // POST: Tastings/FinishTasting/{id}
+        [HttpPost, ActionName("Finish")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> FinishTasting(int id)
+        {
+            var tasting = await _context.Tastings.FindAsync(id);
+            tasting.IsFinished = true;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Tastings");
+        }
+
         // GET: Tastings/TastingResult/{id}
         public async Task<IActionResult> TastingResult(int? id)
         {
