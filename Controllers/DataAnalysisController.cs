@@ -75,7 +75,6 @@ namespace LSA.Controllers
             pcaTool.NumberOfOutputs = 3;
             var outputMatrix = pcaTool.Transform(actual);
 
-            ViewBag.data = outputMatrix;
             ViewBag.columns = pcaTool.NumberOfOutputs;
             ViewBag.rows = outputMatrix.Length;
 
@@ -87,11 +86,16 @@ namespace LSA.Controllers
             {
                 for (int j = 0; j < pcaTool.NumberOfOutputs; j+=3)
                 {
-                    PC1.Add(ViewBag.data[i][j]);
-                    PC2.Add(ViewBag.data[i][j + 1]);
-                    PC3.Add(ViewBag.data[i][j + 2]);
+                    outputMatrix[i][j] = Math.Round(outputMatrix[i][j], 3);
+                    outputMatrix[i][j + 1] = Math.Round(outputMatrix[i][j + 1], 3);
+                    outputMatrix[i][j + 2] = Math.Round(outputMatrix[i][j + 2], 3);
+                    PC1.Add(outputMatrix[i][j]);
+                    PC2.Add(outputMatrix[i][j + 1]);
+                    PC3.Add(outputMatrix[i][j + 2]);
                 }  
             }
+
+            ViewBag.data = outputMatrix;
 
             ViewBag.PC1 = PC1;
             ViewBag.PC2 = PC2;
@@ -211,27 +215,30 @@ namespace LSA.Controllers
             var clusters = kmeans.Learn(outputMatrix);
             int[] clusterId = clusters.Decide(outputMatrix);
 
-            ViewBag.data = outputMatrix;
             ViewBag.columns = pcaTool.NumberOfOutputs;
             ViewBag.rows = outputMatrix.Length;
 
-            List<double> pc1 = new List<double>();
-            List<double> pc2 = new List<double>();
-            List<double> pc3 = new List<double>();
+            List<double> PC1 = new List<double>();
+            List<double> PC2 = new List<double>();
+            List<double> PC3 = new List<double>();
 
-            for (int i = 0; i < ViewBag.data.Length; i++)
+            for (int i = 0; i < outputMatrix.Length; i++)
             {
                 for (int j = 0; j < ViewBag.columns; j += 3)
                 {
-                    pc1.Add(ViewBag.data[i][j]);
-                    pc2.Add(ViewBag.data[i][j + 1]);
-                    pc3.Add(ViewBag.data[i][j + 2]);
+                    outputMatrix[i][j] = Math.Round(outputMatrix[i][j], 3);
+                    outputMatrix[i][j + 1] = Math.Round(outputMatrix[i][j + 1], 3);
+                    outputMatrix[i][j + 2] = Math.Round(outputMatrix[i][j + 2], 3);
+                    PC1.Add(outputMatrix[i][j]);
+                    PC2.Add(outputMatrix[i][j + 1]);
+                    PC3.Add(outputMatrix[i][j + 2]);
                 }
             }
+            ViewBag.data = outputMatrix;
 
-            ViewBag.pc1 = pc1;
-            ViewBag.pc2 = pc2;
-            ViewBag.pc3 = pc3;
+            ViewBag.pc1 = PC1;
+            ViewBag.pc2 = PC2;
+            ViewBag.pc3 = PC3;
 
             ViewBag.clusters = clusterId;
 

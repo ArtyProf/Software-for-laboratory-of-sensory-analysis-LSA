@@ -173,7 +173,7 @@ namespace LSA.Controllers
             }
 
             List<int> products = await _context.ProductToTastings.Where(a => a.TastingId == id).Select(b => b.ProductId).ToListAsync();
-            int tasters = _context.TastingHistory.Where(a => a.TastingId == id).Select(b => b.TasterId).Distinct().Count();
+            int tasters = _context.TasterToTastings.Where(a => a.TastingId == id).Select(b => b.TasterId).Count();
 
             List<string> productNames = new List<string>();
             for (int i=0; i < products.Count; i++)
@@ -198,7 +198,8 @@ namespace LSA.Controllers
                 int garmony = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.Garmony).Sum();
                 int penalty = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.Penalty).Sum();
 
-                double result = (viewColour + viewProse + bouquetClean + bouquetIntensity + bouquetQuality + tasteColour + tasteIntensity + tasteAftertaste + tastePotencial + tasteQuality + garmony + penalty) / tasters;
+                double result = (double)(viewColour + viewProse + bouquetClean + bouquetIntensity + bouquetQuality + tasteColour + tasteIntensity + tasteAftertaste + tastePotencial + tasteQuality + garmony + penalty) / tasters  ;
+                result = Math.Round(result, 2);
                 results.Add(result);
             }
             ViewBag.count = results.Count;
