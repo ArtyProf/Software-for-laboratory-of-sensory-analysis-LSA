@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LSA.Data;
 using LSA.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LSA.Controllers
 {
+    [Authorize(Roles = "CEO,Laboratory")]
     public class TastingsController : Controller
     {
         private readonly ApplicationDbContext _context;

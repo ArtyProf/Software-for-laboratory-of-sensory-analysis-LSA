@@ -11,6 +11,7 @@ using LSA.Interfaces;
 using LSA.Helpers;
 using Microsoft.AspNetCore.Identity;
 using LSA.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LSA.Controllers
 {
@@ -36,11 +37,15 @@ namespace LSA.Controllers
         }
 
         // GET: TastingHistories/Create
+        [Authorize(Roles = "Taster")]
         public async Task<IActionResult> Create()
         {
             int tastingId = await _userAccessService.GetTastingId();
 
             int tasterId = await GetTasterId();
+
+            ViewBag.tastingName = await _context.Tastings.Where(a => a.TastingId == tastingId).Select(b => b.TastingName).FirstAsync();
+            ViewBag.productCount =  _context.TastingHistory.Where(a => a.TastingId == tastingId).Count() + 1;
 
             List<int> assignedTasterIds = await _context.TasterToTastings.Where(c => c.TastingId == tastingId).Select(d => d.TasterId).ToListAsync();
 
@@ -166,7 +171,7 @@ namespace LSA.Controllers
                     return RedirectToAction("ErrorPage", "Home", new { message = "Seems you tasted all products. Tasting is ended. Thank you!" });
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Create", "TastingHistories");
             }
             return View(tastingHistory);
         }

@@ -89,41 +89,43 @@ namespace LSA.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     var roleCheck = false;
-                    if (Input.Email == "lab@lab.com") 
+
+                    switch (Input.Email)
                     {
-                        roleCheck = await _roleManager.RoleExistsAsync("Laboratory");
-                        if (!roleCheck)
-                        {
-                            await _roleManager.CreateAsync(new IdentityRole("Laboratory"));
-                        }
+                        case "lab@lab.com":
+                            roleCheck = await _roleManager.RoleExistsAsync("Laboratory");
+                            if (!roleCheck)
+                            {
+                                await _roleManager.CreateAsync(new IdentityRole("Laboratory"));
+                            }
 
-                        await _userManager.AddToRoleAsync(user, "Laboratory");
-                    }
+                            await _userManager.AddToRoleAsync(user, "Laboratory");
+                            break;
+                        case "ceo@ceo.com":
+                            roleCheck = await _roleManager.RoleExistsAsync("CEO");
+                            if (!roleCheck)
+                            {
+                                await _roleManager.CreateAsync(new IdentityRole("CEO"));
+                            }
 
-                    if (Input.Email == "ceo@ceo.com")
-                    {
-                        roleCheck = await _roleManager.RoleExistsAsync("CEO");
-                        if (!roleCheck)
-                        {
-                            await _roleManager.CreateAsync(new IdentityRole("CEO"));
-                        }
+                            await _userManager.AddToRoleAsync(user, "CEO");
+                            break;
+                        default:
+                            roleCheck = await _roleManager.RoleExistsAsync("Taster");
+                            if (!roleCheck)
+                            {
+                                await _roleManager.CreateAsync(new IdentityRole("Taster"));
+                            }
 
-                        await _userManager.AddToRoleAsync(user, "CEO");
-                    }
+                            await _userManager.AddToRoleAsync(user, "Taster");
 
-                    roleCheck = await _roleManager.RoleExistsAsync("Taster");
-                    if (!roleCheck)
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole("Taster"));
-                    }
-
-                    await _userManager.AddToRoleAsync(user, "Taster");
-
-                    if (await _userManager.IsInRoleAsync(user, "Taster")) 
-                    {
-                        var taster = new Taster { TasterEmail = Input.Email};
-                        _context.Add(taster);
-                        await _context.SaveChangesAsync();
+                            if (await _userManager.IsInRoleAsync(user, "Taster"))
+                            {
+                                var taster = new Taster { TasterEmail = Input.Email };
+                                _context.Add(taster);
+                                await _context.SaveChangesAsync();
+                            }
+                            break;
                     }
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

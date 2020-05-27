@@ -9,6 +9,7 @@ using Accord.MachineLearning;
 using Accord.Statistics.Analysis;
 using LSA.Data;
 using LSA.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,7 @@ namespace LSA.Controllers
             return View(_context.FilesInformation.ToList());
         }
 
+        [Authorize(Roles = "CEO,Laboratory")]
         [HttpPost]
         public async Task<IActionResult> AddFile(IFormFile uploadedFile)
         {

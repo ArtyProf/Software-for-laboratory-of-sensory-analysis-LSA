@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using LSA.Data;
 using LSA.Entities;
 using LSA.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LSA.Controllers
 {
+    [Authorize(Roles = "CEO,Laboratory")]
     public class ProductsToTastingsController : Controller
     {
         private readonly ApplicationDbContext _context;
