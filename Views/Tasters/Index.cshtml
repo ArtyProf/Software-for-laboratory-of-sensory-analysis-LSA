@@ -22,10 +22,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TasterName)
+                @Html.DisplayNameFor(model => model.TasterEmail)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TasterEmail)
+                @Html.DisplayNameFor(model => model.TasterName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.TasterSecondName)
@@ -36,22 +36,22 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TasterName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TasterEmail)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TasterSecondName)
-                </td>
-                <td>
-                    <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.TasterId">Edit</a> |
-                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.TasterId">Details</a> |
-                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.TasterId">Delete</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TasterEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TasterName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TasterSecondName)
+            </td>
+            <td>
+                <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.TasterId">Edit</a> |
+                <a class="btn btn-info" asp-action="Details" asp-route-id="@item.TasterId">Details</a> |
+                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.TasterId">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

@@ -11,7 +11,9 @@ namespace LSA.Entities
     {
         [Key]
         public int TastingId { get; set; }
+        [Display(Name = "Tasting Name")]
         public string TastingName { get; set; }
+        [Display(Name = "Status")]
         public bool IsFinished { get; set; } = false;
         public virtual ICollection<TasterToTasting> TasterToTastings { get; set; }
         public virtual ICollection<ProductToTasting> ProductToTastings { get; set; }

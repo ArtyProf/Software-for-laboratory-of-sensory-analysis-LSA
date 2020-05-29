@@ -10,6 +10,7 @@ namespace LSA.Entities
     {
         [Key]
         public int ProductId { get; set; }
+        [Display(Name = "Name")]
         public string ProductName { get; set; }
         public virtual ICollection<ProductToTasting> ProductToTastings { get; set; }
         public ICollection<TastingHistory> TastingHistory { get; set; }

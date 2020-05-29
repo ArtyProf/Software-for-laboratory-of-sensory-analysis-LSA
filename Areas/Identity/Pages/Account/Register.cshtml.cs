@@ -57,7 +57,12 @@ namespace LSA.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
-
+            [Required]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+            [Required]
+            [Display(Name = "Second Name")]
+            public string SecondName { get; set; }
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
@@ -121,7 +126,7 @@ namespace LSA.Areas.Identity.Pages.Account
 
                             if (await _userManager.IsInRoleAsync(user, "Taster"))
                             {
-                                var taster = new Taster { TasterEmail = Input.Email };
+                                var taster = new Taster { TasterEmail = Input.Email, TasterName = Input.FirstName, TasterSecondName = Input.SecondName };
                                 _context.Add(taster);
                                 await _context.SaveChangesAsync();
                             }

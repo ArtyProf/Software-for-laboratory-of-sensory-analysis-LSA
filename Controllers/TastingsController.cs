@@ -230,7 +230,7 @@ namespace LSA.Controllers
                 int garmony = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.Garmony).Sum();
                 int penalty = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.Penalty).Sum();
 
-                double result = (double)(viewColour + viewProse + bouquetClean + bouquetIntensity + bouquetQuality + tasteColour + tasteIntensity + tasteAftertaste + tastePotencial + tasteQuality + garmony + penalty) / tasters  ;
+                double result = (double)(viewColour + viewProse + bouquetClean + bouquetIntensity + bouquetQuality + tasteColour + tasteIntensity + tasteAftertaste + tastePotencial + tasteQuality + garmony - penalty) / tasters;
                 result = Math.Round(result, 2);
                 results.Add(result);
             }
