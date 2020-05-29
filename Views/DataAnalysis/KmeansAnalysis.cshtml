@@ -4,13 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>KmeansAnalysis</h1>
-
-<div>
-    <a class="btn btn-info" asp-action="Index">Back to List</a>
-</div>
-
-<script>
+@section Scripts {
+    <script>
     var field1 = @Html.Raw(Json.Serialize(ViewBag.field1));
     var field2 = @Html.Raw(Json.Serialize(ViewBag.field2));
     var field3 = @Html.Raw(Json.Serialize(ViewBag.field3));
@@ -20,9 +15,18 @@
     var field3Name = '@ViewBag.nameField3';
 
     window.addEventListener("load", () => {
-      draw3dGraphKmeans(field1,field2,field3,clusters,field1Name,field2Name,field3Name);
+        draw3dGraphKmeans(field1, field2, field3, clusters, field1Name, field2Name, field3Name);
+        $('#dataTable').DataTable();
     });
-</script>
+    </script>
+}
+
+<h1>KmeansAnalysis</h1>
+
+<div>
+    <a class="btn btn-info" asp-action="Index">Back to List</a>
+</div>
+
 <div class="row">
     <div class="col-md-12">
         <h4>Select desired number of clusters</h4>
@@ -54,7 +58,7 @@
     </div>
 </div>
 
-<table class="table">
+<table class="table" id="dataTable">
     <thead>
         <tr>
             <th>

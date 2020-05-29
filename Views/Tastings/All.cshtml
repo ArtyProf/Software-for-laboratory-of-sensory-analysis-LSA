@@ -5,12 +5,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Scripts {
+    <script>
+    window.addEventListener("load", () => {
+        $('#dataTable').DataTable();
+    });
+    </script>
+}
+
 <h1>All Tastings</h1>
 
 <p>
     <a class="btn btn-info" asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table" id="dataTable">
     <thead>
         <tr>
             <th>

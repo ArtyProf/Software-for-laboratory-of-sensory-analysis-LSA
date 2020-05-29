@@ -4,25 +4,27 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Scripts {
+    <script>
+        var results = @Html.Raw(Json.Serialize(ViewBag.results));
+        var products = @Html.Raw(Json.Serialize(ViewBag.products));
+
+        window.addEventListener("load", () => {
+            drawBarChartProductResults(results, products);
+            $('#dataTable').DataTable();
+        });
+    </script>
+}
+
 <h1>TastingResult</h1>
 
 <p>
     <a class="btn btn-info" asp-action="All">All tastings</a>
 </p>
 
-<script>
-    var results = @Html.Raw(Json.Serialize(ViewBag.results));
-    var products = @Html.Raw(Json.Serialize(ViewBag.products));
-
-    window.addEventListener("load", () => {
-      drawBarChartProductResults(results, products);
-    });
-
-</script>
-
 <canvas id="speedChart" width="600" height="400"></canvas>
 
-<table class="table">
+<table class="table" id="dataTable">
     <thead>
         <tr>
             <th>

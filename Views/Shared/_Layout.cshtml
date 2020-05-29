@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - LSA</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/DataTable/jquery.dataTables.min.css" />
 </head>
 <body>
     <header>
@@ -26,7 +27,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         @if (User.IsInRole("Laboratory") ||
-                      User.IsInRole("CEO"))
+                     User.IsInRole("CEO"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Tasters" asp-action="Index">Tasters</a>
@@ -70,6 +71,7 @@
     <script src="~/lib/vis-graph3d/vis-graph3d.min.js"></script>
     <script src="~/lib/chart-js/Chart.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/DataTable/jquery.dataTables.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>

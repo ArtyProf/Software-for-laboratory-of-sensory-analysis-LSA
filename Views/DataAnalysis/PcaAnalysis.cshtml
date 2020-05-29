@@ -4,21 +4,24 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>PCA_Analysis</h1>
-
-<div>
-    <a class="btn btn-info" asp-action="Index">Back to List</a>
-</div>
-
-<script>
+@section Scripts {
+    <script>
     var pc1 = @Html.Raw(Json.Serialize(ViewBag.PC1));
     var pc2 = @Html.Raw(Json.Serialize(ViewBag.PC2));
     var pc3 = @Html.Raw(Json.Serialize(ViewBag.PC3));
 
     window.addEventListener("load", () => {
-      draw3dGraphPCA(pc1,pc2,pc3);
+        draw3dGraphPCA(pc1, pc2, pc3);
+        $('#dataTable').DataTable();
     });
-</script>
+    </script>
+}
+
+<h1>PCA_Analysis</h1>
+
+<div>
+    <a class="btn btn-info" asp-action="Index">Back to List</a>
+</div>
 
 <div class="row">
     <div class="col-md-12">
@@ -28,7 +31,7 @@
     </div>
 </div>
 
-<table class="table">
+<table class="table" id="dataTable">
     <thead>
         <tr>
             <th>

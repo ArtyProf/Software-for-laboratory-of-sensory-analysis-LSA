@@ -5,9 +5,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Scripts {
+    <script>
+    window.addEventListener("load", () => {
+        $('#dataTable').DataTable();
+    });
+    </script>
+}
+
 <h1>Check tasting history</h1>
 
-<table class="table">
+<table class="table" id="dataTable">
     <thead>
         <tr>
             <th>
@@ -20,15 +28,16 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactionDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Hash)
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Hash)
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

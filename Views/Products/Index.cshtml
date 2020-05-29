@@ -5,12 +5,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Scripts {
+    <script>
+        window.addEventListener("load", () => {
+            $('#dataTable').DataTable();
+        });
+    </script>
+}
+
 <h1>Products</h1>
 
 <p>
     <a class="btn btn-info" asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table" id="dataTable">
     <thead>
         <tr>
             <th>
@@ -20,17 +28,18 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td>
-                <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

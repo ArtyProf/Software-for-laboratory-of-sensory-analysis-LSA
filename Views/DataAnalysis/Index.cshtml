@@ -5,9 +5,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <h1>DataAnalysis</h1>
+@section Scripts {
+    <script>
+    window.addEventListener("load", () => {
+        $('#dataTable').DataTable();
+    });
+    </script>
+}
 
-    <h3>Select file to upload.</h3>
+<h1>DataAnalysis</h1>
+
+<h3>Select file to upload.</h3>
 <form asp-action="AddFile" asp-controller="DataAnalysis" method="post" enctype="multipart/form-data">
     <br>
     <input type="file" name="uploadedFile" />
@@ -18,7 +26,7 @@
 
 <h3>All files</h3>
 
-<table class="table">
+<table class="table" id="dataTable">
     <thead>
         <tr>
             <th>

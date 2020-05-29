@@ -5,22 +5,26 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>CombinedAnalysis</h1>
-
-<div>
-    <a class="btn btn-info" asp-action="Index">Back to List</a>
-</div>
-
-<script>
+@section Scripts {
+    <script>
     var pc1 = @Html.Raw(Json.Serialize(ViewBag.pc1));
     var pc2 = @Html.Raw(Json.Serialize(ViewBag.pc2));
     var pc3 = @Html.Raw(Json.Serialize(ViewBag.pc3));
     var clusters = @Html.Raw(Json.Serialize(ViewBag.clusters));
 
     window.addEventListener("load", () => {
-      draw3dGraphPcaAndKmeans(pc1,pc2,pc3,clusters);
+        draw3dGraphPcaAndKmeans(pc1, pc2, pc3, clusters);
+        $('#dataTable').DataTable();
     });
-</script>
+    </script>
+}
+
+<h1>CombinedAnalysis</h1>
+
+<div>
+    <a class="btn btn-info" asp-action="Index">Back to List</a>
+</div>
+
 <div class="row">
     <div class="col-md-12">
         <h4>Select desired number of clusters</h4>
@@ -52,7 +56,7 @@
     </div>
 </div>
 
-<table class="table">
+<table class="table" id="dataTable">
     <thead>
         <tr>
             <th>

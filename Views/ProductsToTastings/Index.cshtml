@@ -5,12 +5,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <h1>Assign products to tasting</h1>
+@section Scripts {
+    <script>
+        window.addEventListener("load", () => {
+            $('#dataTable').DataTable();
+        });
+    </script>
+}
+
+<h1>Assign products to tasting</h1>
 
 <p>
     <a class="btn btn-info" asp-action="Create">Assign New</a>
 </p>
-<table class="table">
+<table class="table" id="dataTable">
     <thead>
         <tr>
             <th>
@@ -23,19 +31,20 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.ProductName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tasting.TastingName)
-            </td>
-            <td>
-                @Html.ActionLink("Details", "Details", new { id=item.Product.ProductId, id2=item.Tasting.TastingId }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Product.ProductId, id2=item.Tasting.TastingId })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tasting.TastingName)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = item.Product.ProductId, id2 = item.Tasting.TastingId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Product.ProductId, id2 = item.Tasting.TastingId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
