@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -7,10 +6,10 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using LSA.Data;
 using LSA.Entities;
+using LSA.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
@@ -25,7 +24,7 @@ namespace LSA.Areas.Identity.Pages.Account
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailService _emailService;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
@@ -33,14 +32,14 @@ namespace LSA.Areas.Identity.Pages.Account
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
+            IEmailService emailService,
             RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _emailService = emailService;
             _roleManager = roleManager;
         }
 
@@ -78,17 +77,17 @@ namespace LSA.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAwait(false)).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync().ConfigureAwait(false)).ToList();
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                var result = await _userManager.CreateAsync(user, Input.Password).ConfigureAwait(false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
@@ -98,42 +97,42 @@ namespace LSA.Areas.Identity.Pages.Account
                     switch (Input.Email)
                     {
                         case "lab@lab.com":
-                            roleCheck = await _roleManager.RoleExistsAsync("Laboratory");
+                            roleCheck = await _roleManager.RoleExistsAsync("Laboratory").ConfigureAwait(false);
                             if (!roleCheck)
                             {
-                                await _roleManager.CreateAsync(new IdentityRole("Laboratory"));
+                                await _roleManager.CreateAsync(new IdentityRole("Laboratory")).ConfigureAwait(false);
                             }
 
-                            await _userManager.AddToRoleAsync(user, "Laboratory");
+                            await _userManager.AddToRoleAsync(user, "Laboratory").ConfigureAwait(false);
                             break;
                         case "ceo@ceo.com":
-                            roleCheck = await _roleManager.RoleExistsAsync("CEO");
+                            roleCheck = await _roleManager.RoleExistsAsync("CEO").ConfigureAwait(false);
                             if (!roleCheck)
                             {
-                                await _roleManager.CreateAsync(new IdentityRole("CEO"));
+                                await _roleManager.CreateAsync(new IdentityRole("CEO")).ConfigureAwait(false);
                             }
 
-                            await _userManager.AddToRoleAsync(user, "CEO");
+                            await _userManager.AddToRoleAsync(user, "CEO").ConfigureAwait(false);
                             break;
                         default:
-                            roleCheck = await _roleManager.RoleExistsAsync("Taster");
+                            roleCheck = await _roleManager.RoleExistsAsync("Taster").ConfigureAwait(false);
                             if (!roleCheck)
                             {
-                                await _roleManager.CreateAsync(new IdentityRole("Taster"));
+                                await _roleManager.CreateAsync(new IdentityRole("Taster")).ConfigureAwait(false);
                             }
 
-                            await _userManager.AddToRoleAsync(user, "Taster");
+                            await _userManager.AddToRoleAsync(user, "Taster").ConfigureAwait(false);
 
-                            if (await _userManager.IsInRoleAsync(user, "Taster"))
+                            if (await _userManager.IsInRoleAsync(user, "Taster").ConfigureAwait(false))
                             {
                                 var taster = new Taster { TasterEmail = Input.Email, TasterName = Input.FirstName, TasterSecondName = Input.SecondName };
                                 _context.Add(taster);
-                                await _context.SaveChangesAsync();
+                                await _context.SaveChangesAsync().ConfigureAwait(false);
                             }
                             break;
                     }
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
@@ -141,8 +140,8 @@ namespace LSA.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailService.SendEmailAsync(Input.Email, "Confirm your email",
+                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.").ConfigureAwait(false);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -150,7 +149,7 @@ namespace LSA.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        await _signInManager.SignInAsync(user, isPersistent: false).ConfigureAwait(false);
                         return LocalRedirect(returnUrl);
                     }
                 }
