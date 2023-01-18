@@ -36,7 +36,7 @@ namespace LSA.Controllers
         // GET: TastersToTastings/Details/5
         public async Task<IActionResult> Details(int? id, int? id2)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
@@ -45,7 +45,7 @@ namespace LSA.Controllers
                 .Include(t => t.Taster)
                 .Include(t => t.Tasting)
                 .FirstOrDefaultAsync(m => m.TasterId == id && m.TastingId == id2);
-            if (tasterToTasting == null)
+            if (tasterToTasting is null)
             {
                 return NotFound();
             }
@@ -64,7 +64,7 @@ namespace LSA.Controllers
                                                                    .Contains(c.TasterId)), "TasterId", "TasterName");
             ViewData["TasterId"] = unassignedTasters;
 
-            if (unassignedTasters.Count() < 1)
+            if (!unassignedTasters.Any())
             {
                 return RedirectToAction("ErrorPage", "Home", new { message = "There are not any tasters, who are not assigned to tasting!" });
             }
@@ -94,7 +94,7 @@ namespace LSA.Controllers
         // GET: TastersToTastings/Delete/5
         public async Task<IActionResult> Delete(int? id, int? id2)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
@@ -103,7 +103,7 @@ namespace LSA.Controllers
                 .Include(t => t.Taster)
                 .Include(t => t.Tasting)
                 .FirstOrDefaultAsync(m => m.TasterId == id && m.TastingId == id2);
-            if (tasterToTasting == null)
+            if (tasterToTasting is null)
             {
                 return NotFound();
             }
@@ -120,11 +120,6 @@ namespace LSA.Controllers
             _context.TasterToTastings.Remove(tasterToTasting);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TasterToTastingExists(int id)
-        {
-            return _context.TasterToTastings.Any(e => e.TasterId == id);
         }
     }
 }

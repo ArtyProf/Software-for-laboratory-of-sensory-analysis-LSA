@@ -36,14 +36,14 @@ namespace LSA.Controllers
         // GET: Tastings/Details/{id}
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var tasting = await _context.Tastings
                 .FirstOrDefaultAsync(m => m.TastingId == id);
-            if (tasting == null)
+            if (tasting is null)
             {
                 return NotFound();
             }
@@ -83,13 +83,13 @@ namespace LSA.Controllers
         // GET: Tastings/Edit/{id}
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var tasting = await _context.Tastings.FindAsync(id);
-            if (tasting == null)
+            if (tasting is null)
             {
                 return NotFound();
             }
@@ -134,14 +134,14 @@ namespace LSA.Controllers
         // GET: Tastings/Delete/{id}
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var tasting = await _context.Tastings
                 .FirstOrDefaultAsync(m => m.TastingId == id);
-            if (tasting == null)
+            if (tasting is null)
             {
                 return NotFound();
             }
@@ -163,14 +163,14 @@ namespace LSA.Controllers
         // GET: Tastings/FinishTasting/{id}
         public async Task<IActionResult> Finish(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var tasting = await _context.Tastings
                 .FirstOrDefaultAsync(m => m.TastingId == id);
-            if (tasting == null)
+            if (tasting is null)
             {
                 return NotFound();
             }
@@ -193,13 +193,13 @@ namespace LSA.Controllers
         // GET: Tastings/TastingResult/{id}
         public async Task<IActionResult> TastingResult(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var tasting = await _context.Tastings.FindAsync(id);
-            if (tasting == null)
+            if (tasting is null)
             {
                 return NotFound();
             }
@@ -207,28 +207,29 @@ namespace LSA.Controllers
             List<int> products = await _context.ProductToTastings.Where(a => a.TastingId == id).Select(b => b.ProductId).ToListAsync();
             int tasters = _context.TasterToTastings.Where(a => a.TastingId == id).Select(b => b.TasterId).Count();
 
-            List<string> productNames = new List<string>();
-            for (int i=0; i < products.Count; i++)
+            List<string> productNames = new();
+            List<double> results = new();
+            foreach(var product in products)
             {
-                string productName = await _context.Products.Where(a => a.ProductId == products[i]).Select(b => b.ProductName).FirstAsync();
-                productNames.Add(productName);
-            }
-            List<double> results = new List<double>();
+                string productName = await _context.Products.Where(a => a.ProductId == product).Select(b => b.ProductName).FirstOrDefaultAsync();
+                if (productName is not null)
+                {
+                    productNames.Add(productName);
+                }
 
-            for (int i = 0; i < products.Count; i++)
-            {
-                int viewColour = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.ViewColour).Sum();
-                int viewProse = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.ViewProse).Sum();
-                int bouquetClean = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.BouquetClean).Sum();
-                int bouquetIntensity = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.BouquetIntensity).Sum();
-                int bouquetQuality = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.BouquetQuality).Sum();
-                int tasteColour = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.TasteColour).Sum();
-                int tasteIntensity = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.TasteIntensity).Sum();
-                int tasteAftertaste = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.TasteAftertaste).Sum();
-                int tastePotencial = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.TastePotencial).Sum();
-                int tasteQuality = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.TasteQuality).Sum();
-                int garmony = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.Garmony).Sum();
-                int penalty = _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == products[i]).Select(b => b.Penalty).Sum();
+                var productInformation = await _context.TastingHistory.Where(a => a.TastingId == id && a.ProductId == product).ToListAsync();
+                int viewColour = productInformation.Select(b => b.ViewColour).Sum();
+                int viewProse = productInformation.Select(b => b.ViewProse).Sum();
+                int bouquetClean = productInformation.Select(b => b.BouquetClean).Sum();
+                int bouquetIntensity = productInformation.Select(b => b.BouquetIntensity).Sum();
+                int bouquetQuality = productInformation.Select(b => b.BouquetQuality).Sum();
+                int tasteColour = productInformation.Select(b => b.TasteColour).Sum();
+                int tasteIntensity = productInformation.Select(b => b.TasteIntensity).Sum();
+                int tasteAftertaste = productInformation.Select(b => b.TasteAftertaste).Sum();
+                int tastePotencial = productInformation.Select(b => b.TastePotencial).Sum();
+                int tasteQuality = productInformation.Select(b => b.TasteQuality).Sum();
+                int garmony = productInformation.Select(b => b.Garmony).Sum();
+                int penalty = productInformation.Select(b => b.Penalty).Sum();
 
                 double result = (double)(viewColour + viewProse + bouquetClean + bouquetIntensity + bouquetQuality + tasteColour + tasteIntensity + tasteAftertaste + tastePotencial + tasteQuality + garmony - penalty) / tasters;
                 result = Math.Round(result, 2);

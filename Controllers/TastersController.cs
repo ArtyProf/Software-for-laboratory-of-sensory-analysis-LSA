@@ -115,7 +115,7 @@ namespace LSA.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TasterExists(taster.TasterId))
+                    if (!await _context.Tasters.AnyAsync(e => e.TasterId == taster.TasterId))
                     {
                         return NotFound();
                     }
@@ -132,14 +132,14 @@ namespace LSA.Controllers
         // GET: Tasters/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var taster = await _context.Tasters
                 .FirstOrDefaultAsync(m => m.TasterId == id);
-            if (taster == null)
+            if (taster is null)
             {
                 return NotFound();
             }
@@ -156,11 +156,6 @@ namespace LSA.Controllers
             _context.Tasters.Remove(taster);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TasterExists(int id)
-        {
-            return _context.Tasters.Any(e => e.TasterId == id);
         }
     }
 }
