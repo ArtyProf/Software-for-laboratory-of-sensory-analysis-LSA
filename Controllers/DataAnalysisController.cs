@@ -56,13 +56,13 @@ namespace LSA.Controllers
         // GET: DataAnalysis/PCA_Analysis/id
         public async Task<IActionResult> PcaAnalysis(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var dataAnalysis = await _context.FilesInformation.FindAsync(id);
-            if (dataAnalysis == null)
+            if (dataAnalysis is null)
             {
                 return NotFound();
             }
@@ -80,9 +80,9 @@ namespace LSA.Controllers
             ViewBag.columns = pcaTool.NumberOfOutputs;
             ViewBag.rows = outputMatrix.Length;
 
-            List<double> PC1 = new List<double>();
-            List<double> PC2 = new List<double>();
-            List<double> PC3 = new List<double>();
+            List<double> PC1 = new();
+            List<double> PC2 = new();
+            List<double> PC3 = new();
 
             for (int i = 0; i < outputMatrix.Length; i++)
             {
@@ -109,34 +109,34 @@ namespace LSA.Controllers
         // GET: DataAnalysis/KmeansAnalysis/id
         public async Task<IActionResult> KmeansAnalysis(int? id, int? numOfClusters)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var dataAnalysis = await _context.FilesInformation.FindAsync(id);
-            if (dataAnalysis == null)
+            if (dataAnalysis is null)
             {
                 return NotFound();
             }
 
             string path = await _context.FilesInformation.Where(m => m.Id == id).Select(d => d.Path).FirstOrDefaultAsync();
 
-            CsvReader reader = new CsvReader(_appEnvironment.WebRootPath + path, hasHeaders: true);
+            CsvReader reader = new(_appEnvironment.WebRootPath + path, hasHeaders: true);
             DataTable dataTable = reader.ToTable();
             var headers = reader.GetFieldHeaders();
 
             double[][] arrayOfData = dataTable.AsEnumerable().Select(x => new[] { Convert.ToDouble(x[headers[0]]), Convert.ToDouble(x[headers[1]]), Convert.ToDouble(x[headers[2]]) }).ToArray();
 
-            int numOfClustersOnPost = numOfClusters ?? default(int);
+            int numOfClustersOnPost = numOfClusters ?? default;
 
-            if (numOfClusters == null)
+            if (numOfClusters == default)
             {
                 numOfClustersOnPost = 3;
             }
 
             // Create a new K-Means algorithm
-            KMeans kmeans = new KMeans(k: numOfClustersOnPost);
+            KMeans kmeans = new(k: numOfClustersOnPost);
 
             // Compute and retrieve the data centroids
             var clusters = kmeans.Learn(arrayOfData);
@@ -185,20 +185,20 @@ namespace LSA.Controllers
         // GET: DataAnalysis/CombinedAnalysis/id
         public async Task<IActionResult> CombinedAnalysis(int? id, int? numOfClusters)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var dataAnalysis = await _context.FilesInformation.FindAsync(id);
-            if (dataAnalysis == null)
+            if (dataAnalysis is null)
             {
                 return NotFound();
             }
 
             string path = await _context.FilesInformation.Where(m => m.Id == id).Select(d => d.Path).FirstOrDefaultAsync();
 
-            CsvReader reader = new CsvReader(_appEnvironment.WebRootPath + path, hasHeaders: true);
+            CsvReader reader = new(_appEnvironment.WebRootPath + path, hasHeaders: true);
             double[][] actual = reader.ToJagged();
 
             var pcaTool = new KernelPrincipalComponentAnalysis();
@@ -206,23 +206,23 @@ namespace LSA.Controllers
             pcaTool.NumberOfOutputs = 3;
             var outputMatrix = pcaTool.Transform(actual);
 
-            int numOfClustersOnPost = numOfClusters ?? default(int);
+            int numOfClustersOnPost = numOfClusters ?? default;
 
-            if (numOfClusters == null)
+            if (numOfClusters == default)
             {
                 numOfClustersOnPost = 3;
             }
 
-            KMeans kmeans = new KMeans(k: numOfClustersOnPost);
+            KMeans kmeans = new(k: numOfClustersOnPost);
             var clusters = kmeans.Learn(outputMatrix);
             int[] clusterId = clusters.Decide(outputMatrix);
 
             ViewBag.columns = pcaTool.NumberOfOutputs;
             ViewBag.rows = outputMatrix.Length;
 
-            List<double> PC1 = new List<double>();
-            List<double> PC2 = new List<double>();
-            List<double> PC3 = new List<double>();
+            List<double> PC1 = new();
+            List<double> PC2 = new();
+            List<double> PC3 = new();
 
             for (int i = 0; i < outputMatrix.Length; i++)
             {
@@ -258,14 +258,14 @@ namespace LSA.Controllers
         // GET: DataAnalysis/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var dataAnalysis = await _context.FilesInformation
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (dataAnalysis == null)
+            if (dataAnalysis is null)
             {
                 return NotFound();
             }

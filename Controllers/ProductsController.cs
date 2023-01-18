@@ -30,14 +30,14 @@ namespace LSA.Controllers
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var product = await _context.Products
                 .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
+            if (product is null)
             {
                 return NotFound();
             }
@@ -70,13 +70,13 @@ namespace LSA.Controllers
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            if (product is null)
             {
                 return NotFound();
             }
@@ -104,7 +104,7 @@ namespace LSA.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.ProductId))
+                    if (!await _context.Products.AnyAsync(e => e.ProductId == product.ProductId))
                     {
                         return NotFound();
                     }
@@ -121,14 +121,14 @@ namespace LSA.Controllers
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
             var product = await _context.Products
                 .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
+            if (product is null)
             {
                 return NotFound();
             }
@@ -145,11 +145,6 @@ namespace LSA.Controllers
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.ProductId == id);
         }
     }
 }

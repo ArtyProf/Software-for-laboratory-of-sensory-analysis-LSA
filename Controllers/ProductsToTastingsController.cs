@@ -36,7 +36,7 @@ namespace LSA.Controllers
         // GET: ProductsToTastings/Details/5
         public async Task<IActionResult> Details(int? id, int? id2)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
@@ -45,7 +45,7 @@ namespace LSA.Controllers
                 .Include(p => p.Product)
                 .Include(p => p.Tasting)
                 .FirstOrDefaultAsync(m => m.ProductId == id && m.TastingId == id2);
-            if (productToTasting == null)
+            if (productToTasting is null)
             {
                 return NotFound();
             }
@@ -63,7 +63,7 @@ namespace LSA.Controllers
                                                                     .Contains(c.ProductId)), "ProductId", "ProductName");
             ViewData["ProductId"] = unassignedProducts;
 
-            if (unassignedProducts.Count() < 1)
+            if (!unassignedProducts.Any())
             {
                 return RedirectToAction("ErrorPage", "Home", new { message = "There are not any products, which are not assigned to tasting!" });
             }
@@ -93,7 +93,7 @@ namespace LSA.Controllers
         // GET: ProductsToTastings/Delete/5
         public async Task<IActionResult> Delete(int? id, int? id2)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace LSA.Controllers
                 .Include(p => p.Product)
                 .Include(p => p.Tasting)
                 .FirstOrDefaultAsync(m => m.ProductId == id && m.TastingId == id2);
-            if (productToTasting == null)
+            if (productToTasting is null)
             {
                 return NotFound();
             }
@@ -119,11 +119,6 @@ namespace LSA.Controllers
             _context.ProductToTastings.Remove(productToTasting);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProductToTastingExists(int id)
-        {
-            return _context.ProductToTastings.Any(e => e.ProductId == id);
         }
     }
 }

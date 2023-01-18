@@ -31,7 +31,7 @@ namespace LSA.Services
                 return false;
             }
 
-            if (IsUserExistByEmail(email))
+            if (await IsUserExistByEmail(email))
             {
                 return false;
             }
@@ -55,7 +55,7 @@ namespace LSA.Services
                 await _userManager.AddToRoleAsync(user, "Taster");
             }
 
-            foreach (var error in result.Errors)
+            if (result.Errors.Any())
             {
                 return false;
             }
@@ -63,10 +63,10 @@ namespace LSA.Services
             return true;
         }
 
-        public bool IsUserExistByEmail(string userEmail)
+        public async Task<bool> IsUserExistByEmail(string userEmail)
         {
-            var user = _userManager.FindByEmailAsync(userEmail);
-            if (user.Result != null)
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user is not null)
             {
                 return true;
             }

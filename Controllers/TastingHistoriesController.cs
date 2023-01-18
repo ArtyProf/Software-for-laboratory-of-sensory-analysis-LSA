@@ -47,20 +47,9 @@ namespace LSA.Controllers
             ViewBag.tastingName = await _context.Tastings.Where(a => a.TastingId == tastingId).Select(b => b.TastingName).FirstAsync();
             ViewBag.productCount =  _context.TastingHistory.Where(a => a.TastingId == tastingId).Count() + 1;
 
-            List<int> assignedTasterIds = await _context.TasterToTastings.Where(c => c.TastingId == tastingId).Select(d => d.TasterId).ToListAsync();
+            var assignedTasterIds = await _context.TasterToTastings.Where(c => c.TastingId == tastingId).Select(d => d.TasterId).ToListAsync();
 
-            bool tasterIsAsiggned = false;
-            if (assignedTasterIds.Count > 0)
-            {
-                for (int i = 0; i < assignedTasterIds.Count; i++)
-                {
-                    if (assignedTasterIds[i] == tasterId)
-                    {
-                        tasterIsAsiggned = true;
-                        break;
-                    }
-                }
-            }
+            bool tasterIsAsiggned = assignedTasterIds.Any(x => x == tasterId);
 
             if (!tasterIsAsiggned)
             {
@@ -79,7 +68,7 @@ namespace LSA.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (tastingHistory == null)
+                if (tastingHistory is null)
                     throw new ArgumentNullException(nameof(tastingHistory));
 
                 var tastingHistories = await _context.TastingHistory.ToListAsync();
@@ -174,11 +163,6 @@ namespace LSA.Controllers
                 return RedirectToAction("Create", "TastingHistories");
             }
             return View(tastingHistory);
-        }
-
-        private bool TastingHistoryExists(int id)
-        {
-            return _context.TastingHistory.Any(e => e.TastingHistoryId == id);
         }
 
         public async Task<int> GetTasterId()
